@@ -1,0 +1,7 @@
+.room {
+    display: flex;
+    height: 100vh;
+    flex-wrap: wrap;
+    text-align: center;
+    align-content: space-between;
+}

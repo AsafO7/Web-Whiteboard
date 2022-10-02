@@ -1,0 +1,25 @@
+@import './shared/room/header.css';
+@import './shared/room/online-users.css';
+@import './shared/room/whiteboard.css';
+@import './shared/room/chat.css';
+@import './shared/room/paint-ui.css';
+@import './shared/room/room.css';
+@import './shared/lobby/formfields.css';
+@import './shared/lobby/lobbyheader.css';
+@import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #eee;
+    font-family: 'Rubik', sans-serif;
+    letter-spacing: 1px;
+}
+
+.header, .whiteboard, .paint-ui, .chat, .online-users {
+    border: 1px solid black;
+}
