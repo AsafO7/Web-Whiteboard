@@ -40,9 +40,9 @@ const FormFields: FC/*<log>*/ = (/*{setIsLoggedIn}*/) => {
         
         else {
             dispatch(loginSuccess(res))
-            setErrMsg(() => "")
             const list = await getOnlineUsers()
             dispatch(updateList(list))
+            setErrMsg(() => "")
             navigate('/lobby')
         }
     }
