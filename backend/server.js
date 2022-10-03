@@ -22,8 +22,17 @@ app.use('/lobby', lobbyRoutes)
 app.post('/', async (req, res) => {
     const { name, email } = req.body
     try {
-        const update = { isLoggedIn: false }
-        await User.findOneAndUpdate(email, update)
+        // const update = { isLoggedIn: false }
+        // await User.findOneAndUpdate(email, update)
+        User.updateOne({ email: email }, {
+            $set: { 
+              "isLoggedIn": false
+            }
+        }, function (err, user) {
+            if (err) throw new Error(err)
+            console.log(user)
+            console.log("update user complete")
+        })
         res.status(201).send({ name })
     }
     catch(err) {

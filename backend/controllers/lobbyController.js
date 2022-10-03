@@ -59,8 +59,17 @@ const loginUser = async (req, res) => {
                 return
             }
             else if(await bcrypt.compare(password, userExistsEmail.password)) {
-                const update = { isLoggedIn: true }
-                await User.findOneAndUpdate(email, update)
+                // const update = { isLoggedIn: true }
+                // await User.findOneAndUpdate(email, update)
+                User.updateOne({ email: email }, {
+                    $set: { 
+                      "isLoggedIn": true
+                    }
+                }, function (err, user) {
+                    if (err) throw new Error(err)
+                    console.log(user)
+                    console.log("update user complete")
+                })
                 res.status(201).send({name, email})
                 return
             }
