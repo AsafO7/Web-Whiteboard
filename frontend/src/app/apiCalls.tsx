@@ -7,7 +7,7 @@ import { WritableDraft } from 'immer/dist/internal'
 export const loginUser = async (user: WritableDraft<{ name: String, email: String, password: String }>, dispatch: Dispatch<AnyAction>) => {
     dispatch(pendingStart())
     try {
-        const response = await axios.post("/lobby", user)
+        const response = await axios.post("http://localhost:5000/lobby", user)
         return response.data
     }
     catch(err) {
@@ -17,7 +17,7 @@ export const loginUser = async (user: WritableDraft<{ name: String, email: Strin
 
 export const logoutUser = async (userInfo: WritableDraft<{ name: String, email: String }>, dispatch: Dispatch<AnyAction>) => {
     try {
-        const response = await axios.post("/", userInfo)
+        const response = await axios.post("http://localhost:5000/", userInfo)
         return response.data
     }
     catch(err) {
@@ -26,6 +26,6 @@ export const logoutUser = async (userInfo: WritableDraft<{ name: String, email: 
 }
 
 export const getOnlineUsers = async () => {
-    const response = await axios.get("/lobby")
+    const response = await axios.get("http://localhost:5000/lobby")
     return response.data
 }
