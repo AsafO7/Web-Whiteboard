@@ -18,7 +18,6 @@ const userSchema = mongoose.Schema({
     },
     currentRoom: {
         type: String,
-        unique: true,
         default: ""
     },
     isLoggedIn: {

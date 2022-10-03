@@ -49,6 +49,11 @@ const loginUser = async (req, res) => {
         
         // Email exists, check for correct input (username or password might be wrong)
         if(userExistsEmail) {
+            if(userExistsEmail.isLoggedIn === true) {
+                res.status(200).send("User is logged in already")
+                return
+            }
+
             if(userExistsEmail.name !== name) { 
                 res.status(200).send("Wrong username")
                 return
@@ -78,6 +83,7 @@ const loginUser = async (req, res) => {
             name: name,
             email: email,
             password: hashedPassword,
+            currentRoom: "",
             isLoggedIn: true,
         })
         
@@ -92,7 +98,7 @@ const loginUser = async (req, res) => {
     }
     catch(err) {
         res.status(400)
-        throw new Error("Something went wrong, please refresh the page")
+        throw new Error(err)
     }
 }
 
