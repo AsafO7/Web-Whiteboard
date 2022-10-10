@@ -5,7 +5,9 @@ import Room from './components/Room/Room';
 import { useUserContext } from './contexts/UserProvider';
 
 function App() {
-  const { user } = useUserContext() 
+  const { user } = useUserContext()
+  console.log(user)
+  
   return (
     <>
       <Routes>
