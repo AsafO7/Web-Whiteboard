@@ -30,7 +30,7 @@ app.post('/', async (req, res) => {
             }
         }, function (err, user) {
             if (err) throw new Error(err)
-            console.log(user)
+            // console.log(user)
             console.log("update user complete")
         })
         res.status(201).send({ name })

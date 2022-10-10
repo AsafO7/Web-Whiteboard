@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { loginUser, getLobbyInfo } = require('../controllers/lobbyController')
+const { loginUser, getLobbyInfo, logReturningUser } = require('../controllers/lobbyController')
 
 router.route('/').post(loginUser).get(getLobbyInfo)
 

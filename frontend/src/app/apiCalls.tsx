@@ -15,6 +15,18 @@ export const loginUser = async (user: WritableDraft<{ name: String, email: Strin
     }
 }
 
+// export const loginReturningUser = async (username: String, dispatch: Dispatch<AnyAction>) => {
+//     dispatch(pendingStart())
+//     console.log(1)
+//     try {
+//         const response = await axios.get("http://localhost:5000/lobby/" + username)
+//         return response.data
+//     }
+//     catch(err) {
+//         dispatch(logError)
+//     }
+// }
+
 export const logoutUser = async (userInfo: WritableDraft<{ name: String, email: String }>, dispatch: Dispatch<AnyAction>) => {
     try {
         const response = await axios.post("http://localhost:5000/", userInfo)

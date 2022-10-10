@@ -17,27 +17,9 @@ const getLobbyInfo = async (req, res) => {
 const loginUser = async (req, res) => {
     // If you don't use the return statement after sending a response, the rest of the function will keep running.
     const { name, email, password } = req.body
-    if(!name || !email || !password) {
-        res.status(200).send('Please fill all fields')
-        return
-    }
-
-    // Email validation
-    let validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    if(!email.match(validRegex)) {
-        res.status(200).send('Invalid email')
-        return
-    }
-
-    // Password validation
-    if(password.length < 6) {
-        res.status(200).send('Password must be at least 6 characters long')
-        return
-    }
-
-    // Name validation
-    if(name.length > 20) {
-        res.status(200).send("Name can't be longer than 20 characters")
+    const validationMsg = validateUser(name, email, password)
+    if(validationMsg) {
+        res.status(200).send(validationMsg)
         return
     }
 
@@ -67,7 +49,7 @@ const loginUser = async (req, res) => {
                     }
                 }, function (err, user) {
                     if (err) throw new Error(err)
-                    console.log(user)
+                    // console.log(user)
                     console.log("update user complete")
                 })
                 res.status(201).send({name, email})
@@ -109,6 +91,22 @@ const loginUser = async (req, res) => {
         res.status(400)
         throw new Error(err)
     }
+}
+
+function validateUser(name, email, password) {
+    if(!name || !email || !password) return 'Please fill the all fields'
+
+    // Email validation
+    let validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if(!email.match(validRegex)) return 'Invalid email'
+
+    // Password validation
+    if(password.length < 6) return 'Password must be at least 6 characters long'
+
+    // Name validation
+    if(name.length > 20) return "Name can't be longer than 20 characters"
+
+    return ""
 }
 
 module.exports = { loginUser, getLobbyInfo }
