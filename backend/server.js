@@ -5,8 +5,10 @@ const cors = require('cors')
 const connectDB = require('./config/db');
 const { errorHandler } = require('./middleware/errorMiddleware');
 const lobbyRoutes = require('./routes/lobbyRoutes')
+const roomsRoutes = require('./routes/roomsRoutes')
 const User = require('./models/User')
-const path = require('path')
+const path = require('path');
+const Room = require('./models/Room');
 
 connectDB()
 
@@ -18,22 +20,47 @@ app.use(cors())
 app.use(errorHandler);
 
 app.use('/lobby', lobbyRoutes)
+app.use('/rooms', roomsRoutes)
 
 app.post('/', async (req, res) => {
-    const { name, email } = req.body
+    const { name, email, currentRoom } = req.body
     try {
         // const update = { isLoggedIn: false }
         // await User.findOneAndUpdate(email, update)
-        User.updateOne({ email: email }, {
-            $set: { 
-              "isLoggedIn": false
+        if(email && name) {
+            await User.updateOne({ email: email }, {
+                $set: { 
+                  "isLoggedIn": false,
+                  "currentRoom": ""
+                }
+            }/*, function (err) {
+                if (err) throw new Error(err)
+                else console.log("update user complete logout")
+            }*/).clone()
+            // await Room.updateOne({ id }, {
+            //     $set: {
+            //         "onlineUsers": 
+            //     }
+            // })
+            let onlineUsersList = []
+            const userCurrRoom = await Room.findOne({ currentRoom })
+            onlineUsersList = userCurrRoom.onlineUsers
+            onlineUsersList = onlineUsersList.filter((roomUser) => roomUser !== name)
+            if(onlineUsersList.length === 0) {
+                // Delete the room
             }
-        }, function (err, user) {
-            if (err) throw new Error(err)
-            // console.log(user)
-            console.log("update user complete")
-        })
-        res.status(201).send({ name })
+            else {
+
+            }
+            // put this query in the else after writing the room deletion code
+            await Room.updateOne({ currentRoom }, {
+                $set: {
+                    "onlineUsers": onlineUsersList
+                }
+            }).clone()
+            res.status(201).send({ name })
+            console.log("logout successful")
+        }
     }
     catch(err) {
         res.status(200).send("Something went wrong")

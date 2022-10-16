@@ -6,18 +6,24 @@ import App from './App';
 import './stylesheets/main.css'
 import { BrowserRouter } from 'react-router-dom';
 import { UserProvider } from './contexts/UserProvider';
+import { RoomsProvider } from './contexts/RoomsProvider';
+import { RoomProvider } from './contexts/RoomProvider';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <UserProvider>
-      <BrowserRouter>
-        <Provider store={store}>
-          <App />
-        </Provider>
-      </BrowserRouter>
-    </UserProvider>
+    <RoomsProvider>
+      <RoomProvider>
+        <UserProvider>
+          <BrowserRouter>
+            <Provider store={store}>
+              <App />
+            </Provider>
+          </BrowserRouter>
+        </UserProvider>
+      </RoomProvider>
+    </RoomsProvider>
   </React.StrictMode>
 );

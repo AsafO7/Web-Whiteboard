@@ -4,8 +4,9 @@
 @import './shared/room/chat.css';
 @import './shared/room/paint-ui.css';
 @import './shared/room/room.css';
-@import './shared/lobby/formfields.css';
+@import './shared/login//formfields.css';
 @import './shared/lobby/lobbyheader.css';
+@import './shared/lobby/lobby.css';
 @import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
 
 * {

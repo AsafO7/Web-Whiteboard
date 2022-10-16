@@ -1,15 +1,37 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/User')
+const Room = require('../models/Room')
 
+// Returns the user and the rooms list
 const getLobbyInfo = async (req, res) => {
     // Send the rooms' info here
     // const players = await Player.find({}).sort({score: -1, name: -1}).limit(10)
     // res.status(200).json(players)
     try {
-        const onlineList = await User.find({ isLoggedIn: true }).select('name').exec()
-        res.status(201).send(onlineList)
+        // const onlineList = await User.find({ isLoggedIn: true }).select('name').exec()
+        // res.status(201).send(onlineList)
+        const { name, email, currentRoom } = req.query
+        const user = await User.findOne({ email })
+        if(user.isLoggedIn === false) {
+            await User.updateOne({ email: email }, {
+                $set: { 
+                  "isLoggedIn": true,
+                  "currentRoom": currentRoom
+                }
+            }/*, function (err, user) {
+                if (err) throw new Error(err)
+                // console.log(user)
+                console.log("update user complete login")
+            }*/).clone()
+        }
+        const rooms = await Room.find({})
+        // const currRoom = user.currentRoom
+        res.status(201).send({name, email, currentRoom, rooms})
+        console.log("login successful")
+        return
     }
     catch(err) {
+        console.log(err)
         res.status(200).send("Something went wrong getting the list")
     }
 }
@@ -43,15 +65,11 @@ const loginUser = async (req, res) => {
             else if(await bcrypt.compare(password, userExistsEmail.password)) {
                 // const update = { isLoggedIn: true }
                 // await User.findOneAndUpdate(email, update)
-                User.updateOne({ email: email }, {
+                await User.updateOne({ email: email }, {
                     $set: { 
                       "isLoggedIn": true
                     }
-                }, function (err, user) {
-                    if (err) throw new Error(err)
-                    // console.log(user)
-                    console.log("update user complete")
-                })
+                }).clone()
                 res.status(201).send({name, email})
                 return
             }

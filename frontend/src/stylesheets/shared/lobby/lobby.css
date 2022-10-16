@@ -1,0 +1,53 @@
+
+
+
+
+.lobby-main, .rooms-list-container, .create-room-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.rooms-list-container {
+    margin-top: 4rem;
+}
+
+.rooms-list-container h1, .rooms-list, .create-room-btn {
+    margin-bottom: 1.5rem;
+}
+
+.rooms-list {
+    list-style: none;
+    font-size: 1.5em;
+    padding: 0.5rem;
+}
+
+.create-room-btn {
+  background-image: linear-gradient(#42A1EC, #0070C9);
+  border: 1px solid #0077CC;
+  border-radius: 10px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  font-size: 1rem;
+  letter-spacing: -.022em;
+  line-height: 1.47059;
+  overflow: visible;
+  padding: 4px 15px;
+  text-align: center;
+  align-self: center;
+  white-space: nowrap;
+}
+
+.create-room-form {
+    font-size: 1.6em;
+}
+
+.create-room-form input {
+    height: 35px;
+    margin: 0.5rem 0;
+    border-radius: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    font-size: 0.7em;
+}
