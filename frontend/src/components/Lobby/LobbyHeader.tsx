@@ -10,7 +10,7 @@ import { useUserContext } from '../../contexts/UserProvider'
 // }
 
 const LobbyHeader: FC/*<emptyRoomFunc>*/ = (/*{updateToEmptyRoom}*/) => {
-    const { user } = useUserContext()
+    const { user,setUser } = useUserContext()
     const navigate = useNavigate()
     
     
@@ -30,6 +30,7 @@ const LobbyHeader: FC/*<emptyRoomFunc>*/ = (/*{updateToEmptyRoom}*/) => {
             // dispatch(logoutSuccess())
             // const emptyUser = {name: "", email: ""}
             // setUser(() => emptyUser)
+            setUser({name: "", email:"", currentRoom: ""})
             navigate('/')
             // dispatch(logError())
         }
