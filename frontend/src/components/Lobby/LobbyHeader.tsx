@@ -1,46 +1,20 @@
 import { FC} from 'react'
 import { useNavigate } from 'react-router-dom'
-// import { useAppDispatch } from '../../app/hooks'
 import { logoutUser } from '../../app/apiCalls'
-// import { loginSuccess, logoutSuccess } from '../../app/userSlice'
 import { useUserContext } from '../../contexts/UserProvider'
 
-// interface emptyRoomFunc {
-//     updateToEmptyRoom: () => Promise<void>
-// }
 
-const LobbyHeader: FC/*<emptyRoomFunc>*/ = (/*{updateToEmptyRoom}*/) => {
+const LobbyHeader: FC = () => {
     const { user,setUser } = useUserContext()
     const navigate = useNavigate()
-    
-    
-    // const dispatch = useAppDispatch()
-    
-    // setTimeout(() => {
-    //     dispatch(loginSuccess(user))
-    // }, 500)
     
     const handleSubmit = async () => {
         const userInfo = user
         const res = await logoutUser(userInfo)
         if(typeof(res) !== "string") {
-            // if(user.currentRoom !== "") {
-            //     updateToEmptyRoom()
-            // }
-            // dispatch(logoutSuccess())
-            // const emptyUser = {name: "", email: ""}
-            // setUser(() => emptyUser)
             setUser({name: "", email:"", currentRoom: ""})
             navigate('/')
-            // dispatch(logError())
         }
-        
-        // else {
-        //     dispatch(logoutSuccess())
-        //     const userInfo = {name: "", email: ""}
-        //     setUser(() => userInfo)
-        //     navigate('/')
-        // }
     }
 
     return (

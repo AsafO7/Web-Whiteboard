@@ -1,17 +1,12 @@
-// import { AnyAction } from '@reduxjs/toolkit'
 import axios from 'axios'
-// import { Dispatch } from 'react'
-// import { pendingStart, logError } from './userSlice'
 import { WritableDraft } from 'immer/dist/internal'
 
 export const loginUser = async (user: WritableDraft<{ name: String, email: String, password: String }>) => {
-    // dispatch(pendingStart())
     try {
         const response = await axios.post("http://localhost:5000/lobby", user)
         return response.data
     }
     catch(err) {
-        // dispatch(logError())
         console.log(err)
     }
 }
@@ -22,7 +17,6 @@ export const logoutUser = async (userInfo: { name: String, email: String }) => {
         return response.data
     }
     catch(err) {
-        // dispatch(logError())
         console.log(err)
     }
 }
@@ -33,7 +27,6 @@ export const updateUserRoom = async ( userInfo: { name: String, email: String, c
         return response.data
     }
     catch(err) {
-        // dispatch(logError())
         console.log(err)
     }
 }
@@ -54,7 +47,6 @@ export const createRoom = async (userName: String, roomName: String, roomId: Str
         return response.data
     }
     catch(err) {
-        // dispatch(logError())
         console.log(err)
     }
 }

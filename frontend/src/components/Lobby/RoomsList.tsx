@@ -22,13 +22,14 @@ const RoomsList: FC<loadingState> = ({loading}) => {
       // }
       // else {
           const userInfo = { name: user.name, email: user.email, currentRoom: res.id }
+          console.log(res)
           setUser(() => userInfo)
       // }
       const newRoomInfo = { name: res.name, id: res.id, userWhoOpened: res.userWhoOpened, onlineUsers: res.onlineUsers, drawingHistory: res.drawingHistory}
       setRoom(() => newRoomInfo)
-      setTimeout(() => {
-        navigate(`/room/${roomId}`)
-      }, 500)
+      // setTimeout(() => {
+      navigate(`/room/${roomId}`)
+      // }, 500)
     }
     else {
       console.log("something went wrong")
@@ -38,14 +39,14 @@ const RoomsList: FC<loadingState> = ({loading}) => {
   return (
     <div className='rooms-list-container'>
         <h1>Rooms:</h1>
-        {loading? <h2>Loading...</h2> : <ul className='rooms-list'>
+        {loading ? <h2>Loading...</h2> : roomsList.length > 0 ? <ul className='rooms-list'>
             {roomsList.map((room, index) => {
               return <li key={`${room.id}${index}`}>
                 <span>{room.name}</span>
                 <button onClick={() => handleGetRoomInfo(room.id)}>Enter</button>
               </li>
             })}
-        </ul>}
+        </ul> : <h2>There are no open rooms currently</h2>}
     </div>
   )
 }

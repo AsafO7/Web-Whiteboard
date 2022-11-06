@@ -25,37 +25,28 @@ app.use('/rooms', roomsRoutes)
 app.post('/', async (req, res) => {
     const { name, email, currentRoom } = req.body
     try {
-        // const update = { isLoggedIn: false }
-        // await User.findOneAndUpdate(email, update)
         if(email && name) {
-            await User.updateOne({ email: email }, {
-                $set: { 
-                  "isLoggedIn": false,
-                  "currentRoom": ""
-                }
-            }/*, function (err) {
-                if (err) throw new Error(err)
-                else console.log("update user complete logout")
-            }*/).clone()
-            // await Room.updateOne({ id }, {
-            //     $set: {
-            //         "onlineUsers": 
-            //     }
-            // })
             let onlineUsersList = []
             const userCurrRoom = await Room.findOne({ currentRoom })
-            onlineUsersList = userCurrRoom.onlineUsers
-            onlineUsersList = onlineUsersList.filter((roomUser) => roomUser !== name)
-            if(onlineUsersList.length === 0) {
-                // Delete the room
+            if(userCurrRoom) {
+                onlineUsersList = userCurrRoom.onlineUsers
+                onlineUsersList = onlineUsersList.filter((roomUser) => roomUser !== name)
+                if(onlineUsersList.length === 0) {
+                    // Delete the room
+                    await Room.deleteOne({ currentRoom }).clone()
+                }
+                else {
+                    await Room.updateOne({ currentRoom }, {
+                        $set: {
+                            onlineUsers: onlineUsersList
+                        }
+                    }).clone()
+                }
             }
-            else {
-
-            }
-            // put this query in the else after writing the room deletion code
-            await Room.updateOne({ currentRoom }, {
-                $set: {
-                    "onlineUsers": onlineUsersList
+            await User.updateOne({ email: email }, {
+                $set: { 
+                  isLoggedIn: false,
+                  currentRoom: "",
                 }
             }).clone()
             res.status(201).send({ name })

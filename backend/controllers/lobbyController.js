@@ -2,31 +2,22 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User')
 const Room = require('../models/Room')
 
-// Returns the user and the rooms list
+// Returns the user's info except password and the rooms list
 const getLobbyInfo = async (req, res) => {
-    // Send the rooms' info here
-    // const players = await Player.find({}).sort({score: -1, name: -1}).limit(10)
-    // res.status(200).json(players)
     try {
-        // const onlineList = await User.find({ isLoggedIn: true }).select('name').exec()
-        // res.status(201).send(onlineList)
-        const { name, email, currentRoom } = req.query
+        const { name, email } = req.query
         const user = await User.findOne({ email })
         if(user.isLoggedIn === false) {
             await User.updateOne({ email: email }, {
                 $set: { 
-                  "isLoggedIn": true,
-                  "currentRoom": currentRoom
+                  isLoggedIn: true,
+                  currentRoom: "",
                 }
-            }/*, function (err, user) {
-                if (err) throw new Error(err)
-                // console.log(user)
-                console.log("update user complete login")
-            }*/).clone()
+            }).clone()
         }
         const rooms = await Room.find({})
         // const currRoom = user.currentRoom
-        res.status(201).send({name, email, currentRoom, rooms})
+        res.status(201).send({name, email, rooms})
         console.log("login successful")
         return
     }
@@ -63,11 +54,9 @@ const loginUser = async (req, res) => {
                 return
             }
             else if(await bcrypt.compare(password, userExistsEmail.password)) {
-                // const update = { isLoggedIn: true }
-                // await User.findOneAndUpdate(email, update)
                 await User.updateOne({ email: email }, {
                     $set: { 
-                      "isLoggedIn": true
+                      isLoggedIn: true
                     }
                 }).clone()
                 res.status(201).send({name, email})

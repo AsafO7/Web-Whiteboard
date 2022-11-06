@@ -4,6 +4,10 @@ const User = require('../models/User')
 
 const createRoom = async (req, res) => {
     const { userName, roomName, roomId } = req.body
+    if(roomName === "") {
+        res.status(200).send("Room must have a name")
+        return
+    }
     try {
         const room = await Room.create({
             name: roomName,
@@ -15,12 +19,9 @@ const createRoom = async (req, res) => {
         if(room) {
             await User.updateOne({ userName }, {
                 $set: {
-                    "currentRoom": roomId
+                    currentRoom: roomId
                 }
-            }/*, function (err) {
-                if(err) throw new Error(err)
-                else console.log("updated current room")
-            }*/).clone()
+            }).clone()
             res.status(201).send({room})
         }
         else {
@@ -44,20 +45,14 @@ const getRoomInfo = async (req, res) => {
                 newOnlineUsers.push(username)
                 await Room.updateOne({ roomId }, {
                     $set: { 
-                        "onlineUsers": newOnlineUsers
+                        onlineUsers: newOnlineUsers
                     }
-                }/*, function (err) {
-                    if (err) throw new Error(err)
-                    else console.log("update online users")
-                }*/).clone()
+                }).clone()
                 await User.updateOne({ username }, {
                     $set: {
-                        "currentRoom": roomId
+                        currentRoom: roomId
                     }
-                }/*, function(err) {
-                    if(err) throw new Error(err)
-                    else console.log("update current room")
-                }*/).clone()
+                }).clone()
             }
             res.status(201).send(room)
         }
@@ -76,51 +71,37 @@ const updateOnlineUsersRoom = async (req, res) => {
     // Update online users for rooms
     try {
         let onlineUsersList = []
-        if(currentRoom !== "") {
-            // const room = await Room.findOne({ currRoom })
-            // // console.log(room)
-            // onlineUsersList = room.onlineUsers
-            // // User enters a room
-            // if(room) {
-            //     onlineUsersList.push(name)
+        const currUser = await User.findOne({ email })
+        const userCurrRoom = await Room.findOne({ currentRoom })
+        // found the user and their previous room
+        if(currUser && userCurrRoom) {
+            // found the room
+            // if(userCurrRoom) {
+            onlineUsersList = userCurrRoom.onlineUsers
+            onlineUsersList = onlineUsersList.filter((roomUser) => roomUser !== name)
+            if(onlineUsersList.length === 0) {
+                // Delete the room
+                await Room.deleteOne({ currentRoom }).clone()
+            }
             // }
-        }
-        // User leaves a room
-        else {
-            const currUser = await User.findOne({ email })
-            // found the user
-            if(currUser) {
-                // const roomId = currUser.currentRoom
-                const userCurrRoom = await Room.findOne({ currentRoom })
-                // found the room
-                if(userCurrRoom) {
-                    onlineUsersList = userCurrRoom.onlineUsers
-                    // console.log(onlineUsersList[0] !== name)
-                    // console.log(onlineUsersList)
-                    onlineUsersList = onlineUsersList.filter((roomUser) => roomUser !== name)
-                    // console.log(onlineUsersList)
-                    if(onlineUsersList.length === 0) {
-                        // Delete the room
+            else {
+                await Room.updateOne({ currentRoom }, {
+                    $set: {
+                        onlineUsers: onlineUsersList
                     }
-                }
+                }).clone()
             }
         }
-        // console.log(name)
-        await Room.updateOne({ currentRoom }, {
-            $set: {
-                "onlineUsers": onlineUsersList
-            }
-        }).clone()
         await User.updateOne({ email }, {
-            "currentRoom": currentRoom
+            $set: {
+                currentRoom: ""
+            }
         }).clone()
         res.status(201).send({currentRoom})
     }
     catch(err) {
         res.status(200).send(err)
-        // throw new Error(err)
     }
-    // Update current room for user
 }
 
 module.exports = { createRoom, getRoomInfo, updateOnlineUsersRoom }

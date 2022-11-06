@@ -9,7 +9,7 @@ import { useUserContext } from "../../contexts/UserProvider";
 
 function CreateRoomForm() {
     const roomNameRef = useRef<any>()
-    const { user } = useUserContext()
+    const { user, setUser } = useUserContext()
     const navigate = useNavigate()
     const [errMsg, setErrMsg] = useState("")
     const {roomsList, setRooms } = useRoomsContext()
@@ -28,6 +28,7 @@ function CreateRoomForm() {
             newRoomsList.push(res.room)
             setRooms(() => newRoomsList)
             setRoom(() => res.room)
+            setUser({name: user.name, email: user.email, currentRoom: res.room.id})
             navigate(`/room/${roomId}`)
         }
         else {
@@ -42,7 +43,7 @@ function CreateRoomForm() {
                 <label>Room Name: <input type='text' name='roomname' required ref={roomNameRef} /></label>
                 <button type="submit" onClick={handleSubmit} className='form-btn'>Create</button>
             </form>
-            {errMsg && <span>{errMsg}</span>}
+            {errMsg && <span className="form-err-msg">{errMsg}</span>}
         </>
     );
 }
