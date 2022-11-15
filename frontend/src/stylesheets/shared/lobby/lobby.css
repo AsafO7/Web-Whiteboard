@@ -22,7 +22,7 @@
     padding: 0.5rem;
 }
 
-.create-room-btn {
+.create-room-btn, .enter-room-btn {
   background-image: linear-gradient(#42A1EC, #0070C9);
   border: 1px solid #0077CC;
   border-radius: 10px;
@@ -37,6 +37,17 @@
   text-align: center;
   align-self: center;
   white-space: nowrap;
+}
+
+.enter-room-btn {
+    margin-left: 0.5rem;
+    padding: 2px 20px;
+    
+}
+
+.enter-room-btn:hover {
+    background-image: linear-gradient(#72baf1, #2a8edf);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 .create-room-form {

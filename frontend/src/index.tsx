@@ -14,16 +14,16 @@ const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <RoomsProvider>
-      <RoomProvider>
-        <UserProvider>
-          <BrowserRouter>
-            <Provider store={store}>
-              <App />
-            </Provider>
-          </BrowserRouter>
-        </UserProvider>
-      </RoomProvider>
-    </RoomsProvider>
+      <RoomsProvider>
+        <RoomProvider>
+          <UserProvider>
+            <BrowserRouter>
+              <Provider store={store}>
+                <App />
+              </Provider>
+            </BrowserRouter>
+          </UserProvider>
+        </RoomProvider>
+      </RoomsProvider>
   </React.StrictMode>
 );

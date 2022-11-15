@@ -1,7 +1,8 @@
-// import { useCallback } from 'react'
-// import { getRoomInfo } from '../../app/apiCalls';
+import { FC, useEffect } from 'react';
 // import { useRoomContext } from '../../contexts/RoomProvider';
+// import { useRoomsContext } from '../../contexts/RoomsProvider';
 // import { useUserContext } from '../../contexts/UserProvider';
+import { SocketRef } from '../Lobby/Lobby';
 import Chat from './Chat/Chat';
 import Header from './Header/Header';
 import OnlineUsers from './OnlineUsers/OnlineUsers';
@@ -9,28 +10,29 @@ import PaintUI from './PaintUI/PaintUI';
 import Whiteboard from './Whiteboard/Whiteboard';
 
 
-function Room() {
+const Room: FC<SocketRef> = ({socket}) => {
 
   // const { user } = useUserContext()
+  // const { roomsList } = useRoomsContext()
   // const { room } = useRoomContext()
 
-  // const getRoom = useCallback(async() => {
-    
-  //   if(room.onlineUsers.indexOf(user.name) === -1) {
-  //     await getRoomInfo(room.id, user.name)
-  //     console.log(1);
-  //   }
-  // },[room, user])
-  // getRoom()
+  // console.log(room)
+  // console.log(roomsList)
+  
+  useEffect(() => {
+    socket.connect()
+  },[socket])
 
   return (
-    <div className="room">
+    <>
+    {/*user.currentRoom ?*/ <div className="room">
       <Header />
-      <OnlineUsers />
+      <OnlineUsers socket={socket}/>
       <Whiteboard />
       <Chat />
       <PaintUI />
-    </div>
+    </div>/* : <h1>Redirecting to lobby</h1>*/}
+    </>
   )
 }
 

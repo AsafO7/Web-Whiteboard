@@ -1,23 +1,33 @@
 const Room = require("../models/Room")
 const User = require('../models/User')
 
-
 const createRoom = async (req, res) => {
     const { userName, roomName, roomId } = req.body
-    if(roomName === "") {
+    // To check if roomName is just empty spaces
+    const rName = roomName.trim()
+    if(roomName === "" || rName === "") {
         res.status(200).send("Room must have a name")
+        return
+    }
+    const tempRoom = await Room.findOne({ name: roomName })
+    if(tempRoom) {
+        res.status(200).send("This room already exists")
+        return
+    }
+    if(userName === "") {
+        res.status(200).send("Please log in first")
         return
     }
     try {
         const room = await Room.create({
-            name: roomName,
+            name: rName,
             id: roomId,
             userWhoOpened: userName,
             onlineUsers: [userName],
             drawingHistory: [],
         })
         if(room) {
-            await User.updateOne({ userName }, {
+            await User.updateOne({ name: userName }, {
                 $set: {
                     currentRoom: roomId
                 }
@@ -36,19 +46,24 @@ const createRoom = async (req, res) => {
 // Finds the room with roomId, updates its online users with username, updates currentRoom of username, and returns the room
 const getRoomInfo = async (req, res) => {
     const { roomId, username } = req.query
+    if(username === "") {
+        res.status(200).send("Please log in first")
+        return
+    }
     try {
-        const room = await Room.findOne({ id: roomId }).exec()
+        const room = await Room.findOne({ roomId }).exec()
         if(room) {
             // if the user isn't in the online users list of the room
             if(room.onlineUsers.indexOf(username) === -1) {
                 let newOnlineUsers = room.onlineUsers
                 newOnlineUsers.push(username)
-                await Room.updateOne({ roomId }, {
+                await Room.updateOne({ id: roomId }, {
                     $set: { 
                         onlineUsers: newOnlineUsers
                     }
                 }).clone()
-                await User.updateOne({ username }, {
+                
+                await User.updateOne({ name: username }, {
                     $set: {
                         currentRoom: roomId
                     }
@@ -68,6 +83,10 @@ const getRoomInfo = async (req, res) => {
 // Updates the online users of currRoom when a user leaves, and updates currentRoom of user
 const updateOnlineUsersRoom = async (req, res) => {
     const { name, email, currentRoom } = req.body
+    if(name === "") {
+        res.status(200).send("Please log in first")
+        return
+    }
     // Update online users for rooms
     try {
         let onlineUsersList = []
@@ -76,14 +95,11 @@ const updateOnlineUsersRoom = async (req, res) => {
         // found the user and their previous room
         if(currUser && userCurrRoom) {
             // found the room
-            // if(userCurrRoom) {
-            onlineUsersList = userCurrRoom.onlineUsers
-            onlineUsersList = onlineUsersList.filter((roomUser) => roomUser !== name)
+            onlineUsersList = userCurrRoom.onlineUsers.filter((roomUser) => roomUser !== name)
             if(onlineUsersList.length === 0) {
                 // Delete the room
                 await Room.deleteOne({ currentRoom }).clone()
             }
-            // }
             else {
                 await Room.updateOne({ currentRoom }, {
                     $set: {
@@ -92,7 +108,7 @@ const updateOnlineUsersRoom = async (req, res) => {
                 }).clone()
             }
         }
-        await User.updateOne({ email }, {
+        await User.updateOne({ email: email }, {
             $set: {
                 currentRoom: ""
             }

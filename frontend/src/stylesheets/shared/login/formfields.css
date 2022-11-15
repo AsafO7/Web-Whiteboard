@@ -74,7 +74,7 @@
 
 .form-err-msg {
     text-align: center;
-    margin-top: 1rem;
+    margin: 0.8rem 0;
     font-size: 1.5em;
     color: rgb(232, 16, 16);
 }

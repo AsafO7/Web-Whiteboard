@@ -1,5 +1,8 @@
 .header {
     width: 100%;
-    height: min-content;
+    /* height: min-content; */
     flex-grow: 1;
+    font-family: 'Anton', sans-serif;
+    font-size: 3rem;
+    letter-spacing: 2px;
 }

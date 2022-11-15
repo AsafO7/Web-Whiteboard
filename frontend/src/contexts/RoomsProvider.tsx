@@ -10,7 +10,7 @@ export interface Room {
 
 interface Rooms {
     roomsList: Room[],
-    setRooms: React.Dispatch<any>
+    setRooms: React.Dispatch<React.SetStateAction<Room[]>>
 }
 
 // @ts-ignore

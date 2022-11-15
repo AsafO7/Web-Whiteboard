@@ -7,7 +7,7 @@ interface SetUserName {
       email: String,
       currentRoom: String,
     },
-    setUser: React.Dispatch<any>,
+    setUser: React.Dispatch<React.SetStateAction<Object>>,
     // currentRoom: string,
     // setCurrentRoom: React.Dispatch<any>,
 }

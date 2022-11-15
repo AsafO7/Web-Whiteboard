@@ -3,7 +3,8 @@ import { Room } from './RoomsProvider'
 
 interface RoomState {
     room: Room,
-    setRoom: React.Dispatch<any>
+    setRoom: React.Dispatch<any>,
+    // setOnlineUsers: React.Dispatch<React.SetStateAction<String[]>>
 }
 
 // @ts-ignore
@@ -14,12 +15,14 @@ export function useRoomContext() {
 }
 
 export function RoomProvider({ children }: any) {
+  // const [onlineUsers, setOnlineUsers] = useState<String[]>([])
   const [room, setRoom] = useState<Room>({
     name: "",
     id: "",
     userWhoOpened: "",
     onlineUsers: [],
-    drawingHistory: [],})
+    drawingHistory: [],
+  })
 
   return (
     <RoomContext.Provider value={{ room, setRoom }}>

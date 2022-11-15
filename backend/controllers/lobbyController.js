@@ -2,23 +2,26 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User')
 const Room = require('../models/Room')
 
-// Returns the user's info except password and the rooms list
+// Returns the rooms list and the user's info except password
 const getLobbyInfo = async (req, res) => {
+    const { name, email } = req.query
     try {
-        const { name, email } = req.query
+        if(name === "") {
+            res.status(200).send("Please log in first")
+            return
+        }
         const user = await User.findOne({ email })
         if(user.isLoggedIn === false) {
-            await User.updateOne({ email: email }, {
+            await User.updateOne({ email }, {
                 $set: { 
                   isLoggedIn: true,
                   currentRoom: "",
                 }
             }).clone()
+            console.log("login successful")
         }
         const rooms = await Room.find({})
-        // const currRoom = user.currentRoom
         res.status(201).send({name, email, rooms})
-        console.log("login successful")
         return
     }
     catch(err) {

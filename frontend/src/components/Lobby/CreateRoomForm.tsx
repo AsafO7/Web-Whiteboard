@@ -8,7 +8,7 @@ import { useUserContext } from "../../contexts/UserProvider";
 
 
 function CreateRoomForm() {
-    const roomNameRef = useRef<any>()
+    const roomNameRef = useRef<HTMLInputElement>(null)
     const { user, setUser } = useUserContext()
     const navigate = useNavigate()
     const [errMsg, setErrMsg] = useState("")
@@ -17,18 +17,17 @@ function CreateRoomForm() {
     
     const handleSubmit = async(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
-        const roomName = roomNameRef.current.value
+        const roomName = roomNameRef.current?.value
         const roomId = uuidV4()
-        
         const res = await createRoom(user.name, roomName, roomId)
         
         if(typeof(res) !== "string") {
             // Create a room
-            let newRoomsList = roomsList.filter((room) => room.id !== res.room.id)
+            let newRoomsList = roomsList
             newRoomsList.push(res.room)
             setRooms(() => newRoomsList)
             setRoom(() => res.room)
-            setUser({name: user.name, email: user.email, currentRoom: res.room.id})
+            setUser({...user, currentRoom: roomId})
             navigate(`/room/${roomId}`)
         }
         else {
@@ -40,7 +39,7 @@ function CreateRoomForm() {
     return (
         <>
             <form className="create-room-form">
-                <label>Room Name: <input type='text' name='roomname' required ref={roomNameRef} /></label>
+                <label>Room Name: <input type='text' name='roomname' required maxLength={20} ref={roomNameRef} /></label>
                 <button type="submit" onClick={handleSubmit} className='form-btn'>Create</button>
             </form>
             {errMsg && <span className="form-err-msg">{errMsg}</span>}

@@ -1,8 +1,11 @@
 import React from 'react'
+import { useRoomContext } from '../../../contexts/RoomProvider'
 
 function Header() {
+  const { room } = useRoomContext()
+
   return (
-    <div className='header'>Header</div>
+    <div className='header'>{room.name}</div>
   )
 }
 
