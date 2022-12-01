@@ -1,7 +1,4 @@
 import { FC, useEffect } from 'react';
-// import { useRoomContext } from '../../contexts/RoomProvider';
-// import { useRoomsContext } from '../../contexts/RoomsProvider';
-// import { useUserContext } from '../../contexts/UserProvider';
 import { SocketRef } from '../Lobby/Lobby';
 import Chat from './Chat/Chat';
 import Header from './Header/Header';
@@ -11,13 +8,6 @@ import Whiteboard from './Whiteboard/Whiteboard';
 
 
 const Room: FC<SocketRef> = ({socket}) => {
-
-  // const { user } = useUserContext()
-  // const { roomsList } = useRoomsContext()
-  // const { room } = useRoomContext()
-
-  // console.log(room)
-  // console.log(roomsList)
   
   useEffect(() => {
     socket.connect()
@@ -29,7 +19,7 @@ const Room: FC<SocketRef> = ({socket}) => {
       <Header />
       <OnlineUsers socket={socket}/>
       <Whiteboard />
-      <Chat />
+      <Chat socket={socket}/>
       <PaintUI />
     </div>/* : <h1>Redirecting to lobby</h1>*/}
     </>

@@ -1,4 +1,3 @@
-import React from 'react'
 import { useRoomContext } from '../../../contexts/RoomProvider'
 
 function Header() {

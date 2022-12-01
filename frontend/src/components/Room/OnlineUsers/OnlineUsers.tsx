@@ -12,10 +12,8 @@ const OnlineUsers: FC<SocketRef> = ({socket}) => {
   },[socket, user])
 
   useEffect(() => {
-    // socket.on("connect", () => {
       connectUser()
-    // })
-  },[connectUser, room.id, socket, user])
+  },[connectUser])
 
   const addToOnlineList = useCallback((newUser: string, newUserRoomId: string) => {
       console.log("addToOnlineList")

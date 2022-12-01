@@ -20,7 +20,7 @@ export function useRoomsContext() {
   return useContext(RoomsContext)
 }
 
-export function RoomsProvider({ children }: any) {
+export function RoomsProvider({ children }: {children: React.ReactNode}) {
   const [roomsList, setRooms] = useState<Room[]>([])
 
   return (

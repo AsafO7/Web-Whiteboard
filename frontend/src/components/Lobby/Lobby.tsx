@@ -25,6 +25,7 @@ const Lobby: FC<SocketRef> = ({socket}) => {
   const { setRoom } = useRoomContext()
 
   const updateToEmptyRoom = useCallback(async () => {
+    socket.disconnect()
     if(user.currentRoom === "") return
     const userInfo = { name: user.name, email: user.email, currentRoom: "" }
     const res = await updateUserRoom(user)
@@ -34,7 +35,7 @@ const Lobby: FC<SocketRef> = ({socket}) => {
       setRoom(() => {})
     }
     // if(socket.connected) {
-      socket.disconnect()
+      
     // }
   },[setRoom, setUser, socket, user])
 

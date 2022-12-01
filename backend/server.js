@@ -35,12 +35,11 @@ app.post('/', async (req, res) => {
     try {
         if(email && name) {
             let onlineUsersList = []
-            const userCurrRoom = await Room.findOne({ currentRoom })
+            const userCurrRoom = await Room.findOne({ id: currentRoom })
             // Remove user from the room they were in
             if(userCurrRoom) {
                 onlineUsersList = userCurrRoom.onlineUsers
                 onlineUsersList = onlineUsersList.filter((roomUser) => roomUser !== name)
-                console.log(onlineUsersList)
                 if(onlineUsersList.length === 0) {
                     // Delete the room
                     await Room.deleteOne({ currentRoom }).clone()
@@ -83,46 +82,36 @@ else {
     app.get('/', (req, res) => res.send('Please set to production'));
 }
 
-/* when user connects, add them to the onlineUsers array in the rooms array of their specific room, and from the front-end, send an event to add them
-to the rooms array of the other users in the room. (Send the event in OnlineUsers.tsx after adding the user)
 
-when they disconnect, remove them from the onlineUsers array in the rooms array of their specific room, and from the front-end, send an event to remove them
-from the rooms array of the other users in the room. */
-
-let rooms = []
+// let rooms = []
 let users = []
 let roomId = ""
-io.on("connection", socket => {
-    socket.on("user-login", async (user) => {
+io.sockets.on("connection", socket => {
+    /***************** Login\Logout ******************/
+
+    socket.on("user-login", (user) => {
         const newUser = {username: user.name, socketId: socket.id}
-        // let duplicateUser = false
-        // const dupUser = await users.find(e => e.username === user.name)
-        // if(dupUser) duplicateUser = true
-
-        // const userRoom = await Room.findOne({ roomId })
-        // array will be correct when user enters a room. in creation it'll be empty.
-        // if(userRoom) {
-        //     users = userRoom.onlineUsers
-        // }
-
-        // if(!duplicateUser) {
-            users.push(newUser)
-            roomId = user.currentRoom
-            console.log(users, roomId, "from: " + user.name)
-            socket.join(user.currentRoom)
-            console.log(`${user.name} joined the room`)
-            socket.to(roomId).emit("add-user-to-list", user.name, roomId)
-        // }
+        users.push(newUser)
+        roomId = user.currentRoom
+        // console.log(users, roomId, "from: " + user.name)
+        socket.join(user.currentRoom)
+        console.log(`${user.name} joined the room`)
+        socket.to(roomId).emit("add-user-to-list", user.name, roomId)
     })
     socket.on("disconnect", () => {
         const userToSend = users.find(user => user.socketId === socket.id)
-        // console.log(userToSend)
         if(!userToSend) return
-        users = []
+        users = users.filter(user => user.username !== userToSend.username)
         socket.leave(roomId)
         console.log(`${userToSend.username} left the room`)
         socket.to(roomId).emit("logout-user", userToSend.username)
         roomId = ""
+    })
+
+    /***************** Chat ******************/
+
+    socket.on("send-message", (msg, username) => {
+        socket.to(roomId).emit("receive-message", msg, username)
     })
 })
 

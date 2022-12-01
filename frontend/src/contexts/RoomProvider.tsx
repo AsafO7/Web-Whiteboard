@@ -14,7 +14,7 @@ export function useRoomContext() {
   return useContext(RoomContext)
 }
 
-export function RoomProvider({ children }: any) {
+export function RoomProvider({ children }: {children: React.ReactNode}) {
   // const [onlineUsers, setOnlineUsers] = useState<String[]>([])
   const [room, setRoom] = useState<Room>({
     name: "",

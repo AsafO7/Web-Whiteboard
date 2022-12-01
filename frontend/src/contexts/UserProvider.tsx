@@ -19,7 +19,7 @@ export function useUserContext() {
   return useContext(UserContext)
 }
 
-export function UserProvider({ children }: any) {
+export function UserProvider({ children }: {children: React.ReactNode}) {
   const [user, setUser] = useLocalStorage('user', {name: "", email: "", currentRoom: ""})
   // const currentRoom = useRef("")
   // const [currentRoom, setCurrentRoom] = useState("")
