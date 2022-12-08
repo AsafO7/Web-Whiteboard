@@ -1,4 +1,14 @@
 .whiteboard {
-    height: 80%;
+    /* height: 80%; */
     flex-grow: 1;
+    max-height: 80%;
+    min-height: 80%;
+    background-color: white;
 }
+
+#canvas {
+    /* height: 100%; */
+    /* width: 100%; */
+    border: 2px solid red;
+}
+

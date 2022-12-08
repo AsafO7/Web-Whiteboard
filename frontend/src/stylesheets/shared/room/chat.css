@@ -1,15 +1,13 @@
 .chat {
     flex-basis: 15%;
-    height: 80%;
+    max-height: 80%;
     background-color: white;
     display: flex;
-    /* align-items: flex-end; */
     flex-direction: column;
     justify-content: flex-end;
 }
 
 .chat-page {
-    /* width: 100%; */
     display: flex;
     flex-grow: 1;
     flex-direction: column;
@@ -17,18 +15,17 @@
 }
 
 .messages {
-    /* flex-grow: 1; */
-    /* overflow-y: scroll; */
     flex-wrap: wrap;
     display: flex;
     flex-direction: column;
     text-align: left;
+    padding: 0 5px;
 }
 
 .message {
     overflow-wrap: break-word;
-    /* white-space: nowrap; */
     word-break: break-all;
+    margin: 1px 0;
 }
 
 .sent-msg {
@@ -42,15 +39,11 @@
 #chat-msg-form {
     display: flex;
     margin: 2px;
-    width: 99%;
 }
 
 .text-area {
-    /* height: 55px; */
     resize: none;
-    /* width: 99%; */
     font-size: 1.2rem;
-    /* margin: 1px; */
 }
 
 .send-msg-btn {
@@ -68,4 +61,28 @@
   text-align: center;
   align-self: center;
   white-space: nowrap;
+}
+
+@media screen and (max-width: 1000px) {
+    .chat {
+        max-height: 60%;
+    }
+
+    #chat-msg-form {
+        justify-content: center;
+    }
+
+    .messages {
+        display: block;
+    }
+
+    .text-area {
+        height: 55px;
+        align-self: flex-end;
+        width: 100%;
+    }
+
+    .send-msg-btn {
+        align-self: flex-end;
+    }
 }
