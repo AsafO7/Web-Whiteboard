@@ -1,75 +1,43 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useComponentsSizeToSubstractContext } from '../../../contexts/ComponentsSizeToSubstractProvider'
+import { useOnDraw } from './Hooks'
 
 function Whiteboard() {
-  // const divRef = useRef<HTMLDivElement>(null)
-  const canvas = useRef<HTMLCanvasElement | null>(null)
-  const ctx = useRef<CanvasRenderingContext2D | null | undefined>(null)/*useMemo(() => { return canvas.current?.getContext("2d") }, [])*/
-  // const [canvasWidth, setCanvasWidth] = useState<number>(1000)
-  // const [canvasHeight, setCanvasHeight] = useState<number>(1000)
-  const [isPainting, setIsPainting] = useState(false)
+  const { chatWidth, onlineUsersWidth /*, headerHeight, paintUIHeight*/ } = useComponentsSizeToSubstractContext()
+  const containerRef = useRef<HTMLDivElement>(null)
+  const setCanvasRef = useOnDraw(onDraw)
+  // const [boardWidth, setBoardWidth] = useState<number>(10)
+
+  // const handleResize = useCallback(() => {
+  //   console.log(window.innerWidth)
+    
+  //   if(containerRef.current) setBoardWidth(window.innerWidth)
+  // },[])
+
+  // useEffect(() => {
+  //   // const currRef = containerRef.current
+  //   // if(currRef) {
+  //     window.addEventListener("resize", handleResize)
+  //   // }
+
+  //   return () => window.removeEventListener("resize", handleResize)
+  // },[handleResize])
   
-  useEffect(() => {
-    ctx.current = canvas?.current?.getContext("2d")
-  },[])
-
-  // window.addEventListener("load", () => {
-  //   ctx.current = canvas?.current?.getContext("2d")
-  // })
-
-  const draw = useCallback((e: MouseEvent) => {
-    if(!isPainting) return
-    if(ctx && ctx.current) {
-      ctx.current.lineWidth = 10
-      ctx.current.lineCap = "round"
-
-      ctx.current.lineTo(e.clientX, e.clientY)
-      ctx.current.stroke()
-      ctx.current.beginPath()
-      ctx.current.moveTo(e.clientX, e.clientY)
+  function onDraw(ctx: CanvasRenderingContext2D | null | undefined, point: { x: number; y: number; } | null) {
+    if(ctx && point) {
+      ctx.fillStyle = "#3a46fe" // Choose a filling color
+      ctx?.beginPath() // Begin path to draw
+      ctx?.arc(point?.x, point?.y, 2, 0, 2 * Math.PI) // Draw a circle from point
+      ctx.fill() // Fill the circle
     }
-
-  },[ctx, isPainting])
-
-  const startPosition = useCallback((e: MouseEvent) => {
-    setIsPainting(true)
-    draw(e)
-  },[draw])
-
-  const finishPosition = useCallback(() => {
-    setIsPainting(false)
-    ctx?.current?.beginPath()
-  },[ctx])
-
-  useEffect(() => {
-    canvas.current?.addEventListener("mousedown", startPosition)
-    const c = canvas.current
-    return (() => {
-      c?.removeEventListener("mousedown", startPosition)
-    })
-  },[startPosition])
-
-  useEffect(() => {
-    canvas.current?.addEventListener("mouseup", finishPosition)
-    const c = canvas.current
-    return (() => {
-      c?.removeEventListener("mouseup", finishPosition)
-    })
-  },[finishPosition])
-
-  useEffect(() => {
-    canvas.current?.addEventListener("mousemove", draw)
-    const c = canvas.current
-    return (() => {
-      c?.removeEventListener("mousemove", draw)
-    })
-  },[draw])
-
-  console.log("4")
-  
+    
+  }
 
   return (
-    <div className='whiteboard'>
-      <canvas id="canvas" width={1000} height={800} ref={canvas}></canvas>
+    <div className='whiteboard' ref={containerRef}>
+      <canvas id='canvas' ref={setCanvasRef}
+        width={800} 
+        height={containerRef.current ? containerRef.current?.clientHeight - 3 : 700}></canvas>
     </div>
   )
 }

@@ -8,8 +8,6 @@ interface SetUserName {
       currentRoom: String,
     },
     setUser: React.Dispatch<React.SetStateAction<Object>>,
-    // currentRoom: string,
-    // setCurrentRoom: React.Dispatch<any>,
 }
 
 // @ts-ignore
@@ -21,8 +19,6 @@ export function useUserContext() {
 
 export function UserProvider({ children }: {children: React.ReactNode}) {
   const [user, setUser] = useLocalStorage('user', {name: "", email: "", currentRoom: ""})
-  // const currentRoom = useRef("")
-  // const [currentRoom, setCurrentRoom] = useState("")
   
   return (
     <UserContext.Provider value={{ user, setUser }}>

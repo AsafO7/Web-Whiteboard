@@ -1,13 +1,12 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Provider } from 'react-redux';
-import { store } from './app/store';
 import App from './App';
 import './stylesheets/main.css'
 import { BrowserRouter } from 'react-router-dom';
 import { UserProvider } from './contexts/UserProvider';
 import { RoomsProvider } from './contexts/RoomsProvider';
 import { RoomProvider } from './contexts/RoomProvider';
+import { ComponentsSizeToSubstractProvider } from './contexts/ComponentsSizeToSubstractProvider';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -16,13 +15,13 @@ root.render(
   <React.StrictMode>
       <RoomsProvider>
         <RoomProvider>
-          <UserProvider>
-            <BrowserRouter>
-              <Provider store={store}>
+          <ComponentsSizeToSubstractProvider>
+            <UserProvider>
+              <BrowserRouter>
                 <App />
-              </Provider>
-            </BrowserRouter>
-          </UserProvider>
+              </BrowserRouter>
+            </UserProvider>
+          </ComponentsSizeToSubstractProvider>
         </RoomProvider>
       </RoomsProvider>
   </React.StrictMode>

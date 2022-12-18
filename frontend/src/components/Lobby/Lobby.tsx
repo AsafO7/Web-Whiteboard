@@ -32,7 +32,11 @@ const Lobby: FC<SocketRef> = ({socket}) => {
     if(typeof(res) === "string") console.log(res)
     else {
       setUser(() => userInfo)
-      setRoom(() => {})
+      setRoom({name: "",
+      id: "",
+      userWhoOpened: "",
+      onlineUsers: [],
+      drawingHistory: []})
     }
     // if(socket.connected) {
       
