@@ -1,25 +1,26 @@
-import { useRef} from 'react'
+import { FC, useRef, useCallback, useEffect} from 'react'
 import { useComponentsSizeToSubstractContext } from '../../../contexts/ComponentsSizeToSubstractProvider'
-import { useOnDraw } from './Hooks'
+import { useOnDraw } from './useOnDraw'
+import { SocketRef } from '../../Lobby/Lobby'
 
-function Whiteboard() {
+const Whiteboard: FC<SocketRef> = ({socket}) => {
   const { chatWidth, onlineUsersWidth /*, headerHeight, paintUIHeight*/ } = useComponentsSizeToSubstractContext()
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const {setCanvasRef, onMouseDown} = useOnDraw(onDraw)
+  const {setCanvasRef, onMouseDown, getCanvasRef, isDrawingRef} = useOnDraw(onDraw, socket)
   // Sets the ref to the canvas here using the function setCanvasRef in Hooks.tsx
-  
+  // const ctx = useMemo(() => getCanvasRef() ? getCanvasRef()?.getContext("2d") : null ,[getCanvasRef])
   
   function onDraw(ctx: CanvasRenderingContext2D | null | undefined, point: { x: number; y: number; } | null, prevPoint: { x: number; y: number; } | null) {
-      drawLine(prevPoint, point, ctx, "#b782ca", 5)
+      drawLine(prevPoint, point, ctx, "#43c2ad", 5)
   }
 
-  function drawLine(
+  const drawLine = useCallback((
     start: { x: number; y: number; } | null,
     end: { x: number; y: number; } | null,
     ctx: CanvasRenderingContext2D | null | undefined,
     color: string,
-    width: number) 
+    width: number) => 
     {
       start = start ?? end
       if(ctx && start && end) {
@@ -35,8 +36,20 @@ function Whiteboard() {
         ctx.beginPath() // Begin path to draw
         ctx.arc(start.x, start.y, 2, 0, 2 * Math.PI) // Draw a circle from point
         ctx.fill() // Fill the circle
+        
+        
+        if(isDrawingRef.current === true) socket.emit("send-drawing", start, end)
       }
-  }
+  },[isDrawingRef, socket])
+
+  useEffect(() => {
+    socket.on("receive-drawing", (start: {x: number, y: number}, end: {x: number, y: number}) => {
+        drawLine(start, end, getCanvasRef()?.getContext("2d"), "#43c2ad", 5)
+    })
+    return(() => {
+      socket.removeListener("receive-drawing")
+    })
+},[drawLine, getCanvasRef, socket])
 
   return (
     <div className='whiteboard' ref={containerRef}>

@@ -113,6 +113,11 @@ io.sockets.on("connection", socket => {
     socket.on("send-message", (msg, username) => {
         socket.to(roomId).emit("receive-message", msg, username)
     })
+
+    /***************** Whiteboard *****************/
+    socket.on("send-drawing", (start, end) => {
+        socket.to(roomId).emit("receive-drawing", start, end)
+    })
 })
 
 // const port = process.env.PORT || 5000

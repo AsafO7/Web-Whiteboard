@@ -18,7 +18,7 @@ const Room: FC<SocketRef> = ({socket}) => {
     {/*user.currentRoom ?*/ <div className="room">
       <Header />
       <OnlineUsers socket={socket}/>
-      <Whiteboard />
+      <Whiteboard socket={socket}/>
       <Chat socket={socket}/>
       <PaintUI />
     </div>/* : <h1>Redirecting to lobby</h1>*/}
