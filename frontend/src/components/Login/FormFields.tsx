@@ -30,8 +30,8 @@ function FormFields () {
         
         else {
             setErrMsg(() => "")
-            // const userInfo = {name, email, currentRoom: ""}
-            setUser((prev) => { return {...prev, currentRoom: ""}})
+            const userInfo = {name, email, currentRoom: ""}
+            setUser(() => userInfo)
             navigate('/lobby')
         }
     }

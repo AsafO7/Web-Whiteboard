@@ -47,6 +47,7 @@ const Lobby: FC<SocketRef> = ({socket}) => {
     setLoading(() => false)
   },[setRooms, user])
 
+  // Clears user's room info when they leave it without closing the app
   useEffect(() => {
     updateToEmptyRoom()
   },[updateToEmptyRoom])

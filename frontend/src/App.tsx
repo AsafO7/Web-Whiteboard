@@ -7,7 +7,7 @@ import { logoutUser } from './app/apiCalls';
 // import Login from './components/Login/Login';
 // import Room from './components/Room/Room';
 import { useRoomContext } from './contexts/RoomProvider';
-import { useRoomsContext } from './contexts/RoomsProvider';
+// import { useRoomsContext } from './contexts/RoomsProvider';
 import { useUserContext } from './contexts/UserProvider';
 
 const Lobby = lazy(() => import("./components/Lobby/Lobby"))
@@ -16,7 +16,7 @@ const Room = lazy(() => import("./components/Room/Room"))
 
 function App() {
   const { user, setUser } = useUserContext()
-  const { roomsList, setRooms } = useRoomsContext()
+  // const { roomsList, setRooms } = useRoomsContext()
   const { setRoom } = useRoomContext()
   const socket = useRef(io(`http://localhost:5000/`))
   
