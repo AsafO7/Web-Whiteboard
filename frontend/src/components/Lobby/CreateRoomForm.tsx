@@ -27,7 +27,7 @@ function CreateRoomForm() {
             newRoomsList.push(res.room)
             setRooms(() => newRoomsList)
             setRoom(() => res.room)
-            setUser({...user, currentRoom: roomId})
+            setUser((prev) => { return {...prev, currentRoom: roomId} })
             navigate(`/room/${roomId}`)
         }
         else {

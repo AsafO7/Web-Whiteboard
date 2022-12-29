@@ -3,6 +3,9 @@
     flex-grow: 1;
     max-height: 80%;
     min-height: 80%;
+    /* display: flex; */
+    padding: 2px;
+    /* justify-content: center; */
     background-color: white;
 }
 
@@ -10,5 +13,7 @@
     /* height: 100%; */
     /* width: 100%; */
     border: 2px solid red;
+    /* flex-grow: 0; */
+    /* z-index: 999; */
 }
 

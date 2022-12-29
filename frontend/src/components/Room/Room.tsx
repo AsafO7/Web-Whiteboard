@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { SocketRef } from '../Lobby/Lobby';
 import Chat from './Chat/Chat';
 import Header from './Header/Header';
@@ -6,9 +6,15 @@ import OnlineUsers from './OnlineUsers/OnlineUsers';
 import PaintUI from './PaintUI/PaintUI';
 import Whiteboard from './Whiteboard/Whiteboard';
 
+export interface drawingProps {
+  shape: string
+  color: string,
+  width: number
+}
 
 const Room: FC<SocketRef> = ({socket}) => {
-  
+  const [drawingStats, setDrawingStats] = useState<drawingProps>({ shape: "pen", color: "#000000", width: 5})
+
   useEffect(() => {
     socket.connect()
   },[socket])
@@ -18,9 +24,9 @@ const Room: FC<SocketRef> = ({socket}) => {
     {/*user.currentRoom ?*/ <div className="room">
       <Header />
       <OnlineUsers socket={socket}/>
-      <Whiteboard socket={socket}/>
+      <Whiteboard socket={socket} drawingStats={drawingStats} setDrawingStats={setDrawingStats}/>
       <Chat socket={socket}/>
-      <PaintUI />
+      <PaintUI drawingStats={drawingStats} setDrawingStats={setDrawingStats}/>
     </div>/* : <h1>Redirecting to lobby</h1>*/}
     </>
   )

@@ -16,7 +16,7 @@ const RoomsList: FC<LoadingState> = ({loading}) => {
   const handleGetRoomInfo = async (roomId: String) => {
     const res = await getRoomInfo(roomId, user.name)
     if(res && typeof(res) !== "string" && typeof(res) !== "undefined") {
-      setUser({...user, currentRoom: roomId})
+      setUser((prev) => { return {...prev, currentRoom: roomId} })
       if(errMsg) setErrMsg(() => "")
       const newRoomInfo = { name: res.name, id: res.id, userWhoOpened: res.userWhoOpened, onlineUsers: res.onlineUsers, drawingHistory: res.drawingHistory}
       setRoom(() => newRoomInfo)

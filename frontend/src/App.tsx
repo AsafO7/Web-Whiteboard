@@ -28,14 +28,14 @@ function App() {
     const handleTabClose = async (event: { preventDefault: () => void; returnValue: string; }) => {
       event.preventDefault();
       const oldUser = user
-      const userInfo = { name: user.name, email: user.email, currentRoom: ""}
-      setUser(() => userInfo)
+      // const userInfo = { name: user.name, email: user.email, currentRoom: ""}
+      setUser((prev) => { return {...prev, currentRoom: ""}})
       setRoom({name: "",
       id: "",
       userWhoOpened: "",
       onlineUsers: [],
       drawingHistory: []})
-      setRooms(() => roomsList.filter(room => room.id !== user.currentRoom))
+      // setRooms(() => roomsList.filter(room => room.id !== user.currentRoom))
       await logoutUser(oldUser)
       return "beforeunload"
     }

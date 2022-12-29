@@ -37,9 +37,9 @@ const OnlineUsers: FC<SocketRef> = ({socket}) => {
       if(room.onlineUsers.indexOf(newUser) !== -1 || room.id !== newUserRoomId) return
       let newUsersList = room.onlineUsers
       newUsersList.push(newUser)
-      const newRoomInfo = { name: room.name, id: room.id, userWhoOpened: room.userWhoOpened, onlineUsers: newUsersList, drawingHistory: room.drawingHistory}
-      setRoom(() => newRoomInfo)
-  },[room.drawingHistory, room.id, room.name, room.onlineUsers, room.userWhoOpened, setRoom])
+      // const newRoomInfo = { name: room.name, id: room.id, userWhoOpened: room.userWhoOpened, onlineUsers: newUsersList, drawingHistory: room.drawingHistory}
+      setRoom((prev) => { return {...prev, onlineUsers: newUsersList} })
+  },[room.id, room.onlineUsers, setRoom])
 
   useEffect(() => {
     socket.on("add-user-to-list", (newUser, newUserRoomId) => {
@@ -55,9 +55,9 @@ const OnlineUsers: FC<SocketRef> = ({socket}) => {
     let newUsersList = room.onlineUsers
     if(newUsersList.indexOf(username) === -1) return
     newUsersList = newUsersList.filter((name) => name !== username)
-    const newRoomInfo = { name: room.name, id: room.id, userWhoOpened: room.userWhoOpened, onlineUsers: newUsersList, drawingHistory: room.drawingHistory}
-    setRoom(() => newRoomInfo)
-  },[room.drawingHistory, room.id, room.name, room.onlineUsers, room.userWhoOpened, setRoom])
+    // const newRoomInfo = { name: room.name, id: room.id, userWhoOpened: room.userWhoOpened, onlineUsers: newUsersList, drawingHistory: room.drawingHistory}
+    setRoom((prev) => { return {...prev, onlineUsers: newUsersList} })
+  },[room.onlineUsers, setRoom])
   
   useEffect(() => {
     socket.on("logout-user", (username) => {

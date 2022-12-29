@@ -27,20 +27,17 @@ const Lobby: FC<SocketRef> = ({socket}) => {
   const updateToEmptyRoom = useCallback(async () => {
     socket.disconnect()
     if(user.currentRoom === "") return
-    const userInfo = { name: user.name, email: user.email, currentRoom: "" }
+    // const userInfo = { name: user.name, email: user.email, currentRoom: "" }
     const res = await updateUserRoom(user)
     if(typeof(res) === "string") console.log(res)
     else {
-      setUser(() => userInfo)
+      setUser((prev) => { return {...prev, currentRoom: ""}})
       setRoom({name: "",
       id: "",
       userWhoOpened: "",
       onlineUsers: [],
       drawingHistory: []})
     }
-    // if(socket.connected) {
-      
-    // }
   },[setRoom, setUser, socket, user])
 
   const getRooms = useCallback(async () => {

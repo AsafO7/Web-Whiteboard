@@ -1,27 +1,41 @@
-import { useCallback, useEffect, useRef } from 'react'
-import { useComponentsSizeToSubstractContext } from '../../../contexts/ComponentsSizeToSubstractProvider'
+// import { useCallback, useEffect, useRef } from 'react'
+// import { useComponentsSizeToSubstractContext } from '../../../contexts/ComponentsSizeToSubstractProvider'
 
-function PaintUI() {
+import { FC } from "react"
+import { drawingProps } from "../Room"
 
-  const { headerHeight, setHeaderHeight } = useComponentsSizeToSubstractContext()
-  const containerRef = useRef<HTMLDivElement>(null)
+export interface PaintUIProps {
+  drawingStats: drawingProps, setDrawingStats: React.Dispatch<React.SetStateAction<drawingProps>>
+}
 
-  const handleSizeChange = useCallback(() => {
-    if(containerRef.current && headerHeight !== containerRef.current?.offsetHeight) {
-      setHeaderHeight(containerRef.current?.offsetHeight)
-    }
-  },[headerHeight, setHeaderHeight])
+const PaintUI: FC<PaintUIProps> = ({drawingStats, setDrawingStats}) => {
 
-  useEffect(() => {
-    window.addEventListener("resize", handleSizeChange)
+  // const [color, setColor] = useState<string>("")
+
+  // const { headerHeight, setHeaderHeight } = useComponentsSizeToSubstractContext()
+  // const containerRef = useRef<HTMLDivElement>(null)
+
+  // const handleSizeChange = useCallback(() => {
+  //   console.log(containerRef.current)
     
-    return () => {
-      window.removeEventListener("resize", handleSizeChange)
-    }
-  },[containerRef.current?.offsetHeight, handleSizeChange])
+  //   if(containerRef.current && headerHeight !== containerRef.current?.offsetHeight) {
+  //     setHeaderHeight(containerRef.current?.offsetHeight)
+  //   }
+  // },[headerHeight, setHeaderHeight])
+
+  // useEffect(() => {
+  //   window.addEventListener("resize", handleSizeChange)
+    
+  //   return () => {
+  //     window.removeEventListener("resize", handleSizeChange)
+  //   }
+  // },[containerRef.current?.offsetHeight, handleSizeChange])
 
   return (
-    <div className='paint-ui'>PaintUI</div>
+    <div className='paint-ui'>PaintUI
+      <label htmlFor="color">Color: {drawingStats.color}</label>
+      <input type="color" id="color" onChange={e => setDrawingStats({...drawingStats, color: e.target.value})}></input>
+    </div>
   )
 }
 
