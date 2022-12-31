@@ -25,7 +25,7 @@ const Whiteboard: FC<WhiteboardProps> = ({socket, drawingStats, setDrawingStats}
   // const roomDrawings = useRef<(Point[])[]>(room.drawingHistory)
   
   function onDraw(ctx: CanvasRenderingContext2D | null | undefined, point: Point | null, prevPoint: Point | null) {
-      drawLine(prevPoint, point, ctx, drawingStats.color, 5)
+      drawLine(prevPoint, point, ctx, drawingStats.color, drawingStats.width)
   }
 
   const drawLine = useCallback((
@@ -51,14 +51,14 @@ const Whiteboard: FC<WhiteboardProps> = ({socket, drawingStats, setDrawingStats}
         ctx.fill() // Fill the circle
         
         
-        if(isDrawingRef.current === true) socket.emit("send-drawing", start, end, drawingStats.color)
+        if(isDrawingRef.current === true) socket.emit("send-drawing", start, end, drawingStats.color, drawingStats.width)
       }
-  },[drawingStats.color, isDrawingRef, socket])
+  },[drawingStats.color, drawingStats.width, isDrawingRef, socket])
 
   // Real time drawing
   useEffect(() => {
-    socket.on("receive-drawing", (start: Point, end: Point, color: string) => {
-        drawLine(start, end, getCanvasRef()?.getContext("2d"), color, 5)
+    socket.on("receive-drawing", (start: Point, end: Point, color: string, width: number) => {
+        drawLine(start, end, getCanvasRef()?.getContext("2d"), color, width)
     })
     return(() => {
       socket.removeListener("receive-drawing")
@@ -71,14 +71,14 @@ const Whiteboard: FC<WhiteboardProps> = ({socket, drawingStats, setDrawingStats}
     getCanvasRef()?.getContext("2d")?.clearRect(0,0,windowWidthRef.current, windowHeightRef.current)
     for(let i = 0; i < room.drawingHistory.length; i++) {
       for(let j = 0; j < room.drawingHistory[i].path.length - 1; j++) {
-        drawLine(room.drawingHistory[i].path[j], room.drawingHistory[i].path[j+1], getCanvasRef()?.getContext("2d"), room.drawingHistory[i].color, 5)
+        drawLine(room.drawingHistory[i].path[j], room.drawingHistory[i].path[j+1], getCanvasRef()?.getContext("2d"), room.drawingHistory[i].color, room.drawingHistory[i].width)
       } 
     }
  },[room.drawingHistory, getCanvasRef, drawLine])
 
  // Updates the room's drawings through the backend
  useEffect(() => {
-  socket.on("update-drawings", (drawings: {path: Point[], color: string}[]) => {
+  socket.on("update-drawings", (drawings: {path: Point[], color: string, width: number}[]) => {
     setRoom(prev => { return {...prev, drawingHistory: drawings} })
   })
 

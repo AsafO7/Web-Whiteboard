@@ -3,6 +3,7 @@
 
 import { FC } from "react"
 import { drawingProps } from "../Room"
+import WidthButtons from "../Whiteboard/WidthButtons"
 
 export interface PaintUIProps {
   drawingStats: drawingProps, setDrawingStats: React.Dispatch<React.SetStateAction<drawingProps>>
@@ -31,10 +32,14 @@ const PaintUI: FC<PaintUIProps> = ({drawingStats, setDrawingStats}) => {
   //   }
   // },[containerRef.current?.offsetHeight, handleSizeChange])
 
+
   return (
-    <div className='paint-ui'>PaintUI
-      <label htmlFor="color">Color: {drawingStats.color}</label>
-      <input type="color" id="color" onChange={e => setDrawingStats({...drawingStats, color: e.target.value})}></input>
+    <div className='paint-ui'>
+      <div className="paint-ui-grid">
+        <label htmlFor="color">Color:</label>
+        <input type="color" id="color" onChange={e => setDrawingStats({...drawingStats, color: e.target.value})}></input>
+        <WidthButtons drawingStats={drawingStats} setDrawingStats={setDrawingStats}/>
+      </div>
     </div>
   )
 }

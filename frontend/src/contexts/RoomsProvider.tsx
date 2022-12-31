@@ -10,7 +10,7 @@ export interface Room {
     id: String,
     userWhoOpened: String,
     onlineUsers: String[],
-    drawingHistory: {path: Point[], color: string}[],
+    drawingHistory: {path: Point[], color: string, width: number}[],
 }
 
 interface Rooms {

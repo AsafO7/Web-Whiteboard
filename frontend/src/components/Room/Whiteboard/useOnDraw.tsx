@@ -43,10 +43,10 @@ export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | unde
                 isDrawingRef.current = false
                 // To prevent lines connecting after we finished drawing
                 prevPointRef.current = null
-                // room.drawingHistory.drawing.push(path.current)
+                
                 if(path.current.length !== 0) {
-                    room.drawingHistory.push({path: path.current, color: drawingStats.color})
-                    socket.emit("save-drawing", path.current, drawingStats.color, user.currentRoom)
+                    room.drawingHistory.push({path: path.current, color: drawingStats.color, width: drawingStats.width})
+                    socket.emit("save-drawing", path.current, drawingStats.color, drawingStats.width, user.currentRoom)
                     path.current = []
                 }
             }
@@ -79,7 +79,7 @@ export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | unde
         return () => {
            removeListeners()
         }
-    },[drawingStats.color, onDraw, room.drawingHistory, socket, user.currentRoom])
+    },[drawingStats.color, drawingStats.width, onDraw, room.drawingHistory, socket, user.currentRoom])
 
     function setCanvasRef(ref: HTMLCanvasElement | null) {
         if(!ref) return
@@ -94,17 +94,6 @@ export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | unde
     function onMouseDown() {
         isDrawingRef.current = true
     }
-
-    // useEffect(() => {
-    //     socket.on("receive-drawing", (path: {x: number, y: number}[]) => {
-    //       for(let i = 0; i < path.length - 1; i++) {
-    //         onDraw(canvasRef.current?.getContext("2d"), path[i+1], path[i])
-    //       }
-    //     })
-    //     return(() => {
-    //       socket.removeListener("receive-drawing")
-    //     })
-    // },[onDraw, socket])
 
     return { setCanvasRef, onMouseDown, getCanvasRef, isDrawingRef }
 };

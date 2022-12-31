@@ -28,7 +28,6 @@ function App() {
     const handleTabClose = async (event: { preventDefault: () => void; returnValue: string; }) => {
       event.preventDefault();
       const oldUser = user
-      // const userInfo = { name: user.name, email: user.email, currentRoom: ""}
       setUser((prev) => { return {...prev, currentRoom: ""}})
       setRoom({name: "",
       id: "",

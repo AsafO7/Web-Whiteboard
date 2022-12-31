@@ -115,14 +115,14 @@ io.sockets.on("connection", socket => {
     })
 
     /***************** Whiteboard *****************/
-    socket.on("send-drawing", (start, end, color) => {
-        socket.to(roomId).emit("receive-drawing", start, end, color)
+    socket.on("send-drawing", (start, end, color, width) => {
+        socket.to(roomId).emit("receive-drawing", start, end, color, width)
     })
 
-    socket.on("save-drawing", async(path, color, currRoom) => {
+    socket.on("save-drawing", async(path, color, width, currRoom) => {
         const room = await Room.findOne({ id: currRoom })
         let drawings = room.drawingHistory
-        drawings.push({path, color})
+        drawings.push({path, color, width})
         await Room.updateOne({ currRoom }, {
             $set: { 
               drawingHistory: drawings
