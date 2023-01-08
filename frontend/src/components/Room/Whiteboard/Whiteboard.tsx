@@ -1,15 +1,15 @@
 import { FC, useRef, useCallback, useEffect} from 'react'
 import { useComponentsSizeToSubstractContext } from '../../../contexts/ComponentsSizeToSubstractProvider'
 import { useOnDraw } from './useOnDraw'
-import { SocketRef } from '../../Lobby/Lobby'
 import { useRoomContext } from '../../../contexts/RoomProvider'
 import { Point } from '../../../contexts/RoomsProvider'
-import { PaintUIProps } from '../PaintUI/PaintUI'
+import { SocketDrawingProps } from '../Room'
+
 // import { Point } from '../../../contexts/RoomsProvider'
 
-type WhiteboardProps = SocketRef & PaintUIProps
 
-const Whiteboard: FC<WhiteboardProps> = ({socket, drawingStats, setDrawingStats}) => {
+
+const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, setDrawingStats}) => {
   const { chatWidth, onlineUsersWidth , headerHeight/*, paintUIHeight*/ } = useComponentsSizeToSubstractContext()
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -18,11 +18,9 @@ const Whiteboard: FC<WhiteboardProps> = ({socket, drawingStats, setDrawingStats}
 
   const {room, setRoom} = useRoomContext()
 
+  // Sets the ref to the canvas here using the function setCanvasRef in useOnDraw.tsx
   const {setCanvasRef, onMouseDown, getCanvasRef, isDrawingRef} = useOnDraw(onDraw, socket, drawingStats, setDrawingStats)
-  // Sets the ref to the canvas here using the function setCanvasRef in Hooks.tsx
-  // const ctx = useMemo(() => getCanvasRef() ? getCanvasRef()?.getContext("2d") : null ,[getCanvasRef])
 
-  // const roomDrawings = useRef<(Point[])[]>(room.drawingHistory)
   
   function onDraw(ctx: CanvasRenderingContext2D | null | undefined, point: Point | null, prevPoint: Point | null) {
       drawLine(prevPoint, point, ctx, drawingStats.color, drawingStats.width)
@@ -66,14 +64,14 @@ const Whiteboard: FC<WhiteboardProps> = ({socket, drawingStats, setDrawingStats}
 },[drawLine, drawingStats.color, getCanvasRef, socket])
 
  const redraw = useCallback(() => {  
-  if(room.drawingHistory.length === 0) return
-    // Clear the canvas to prevent lags
-    getCanvasRef()?.getContext("2d")?.clearRect(0,0,windowWidthRef.current, windowHeightRef.current)
-    for(let i = 0; i < room.drawingHistory.length; i++) {
-      for(let j = 0; j < room.drawingHistory[i].path.length - 1; j++) {
-        drawLine(room.drawingHistory[i].path[j], room.drawingHistory[i].path[j+1], getCanvasRef()?.getContext("2d"), room.drawingHistory[i].color, room.drawingHistory[i].width)
-      } 
-    }
+  // if(room.drawingHistory.length === 0) return
+  // Clear the canvas to prevent lags
+  getCanvasRef()?.getContext("2d")?.clearRect(0,0,windowWidthRef.current, windowHeightRef.current)
+  for(let i = 0; i < room.drawingHistory.length; i++) {
+    for(let j = 0; j < room.drawingHistory[i].path.length - 1; j++) {
+      drawLine(room.drawingHistory[i].path[j], room.drawingHistory[i].path[j+1], getCanvasRef()?.getContext("2d"), room.drawingHistory[i].color, room.drawingHistory[i].width)
+    } 
+  }
  },[room.drawingHistory, getCanvasRef, drawLine])
 
  // Updates the room's drawings through the backend
@@ -85,7 +83,17 @@ const Whiteboard: FC<WhiteboardProps> = ({socket, drawingStats, setDrawingStats}
   return () => {
     socket.removeListener("update-drawings")
   }
- })
+ },[setRoom, socket])
+
+//  useEffect(() => {
+//   socket.on("receive-undo", (drawings: {path: Point[], color: string, width: number}[]) => {
+//     setRoom(prev => { return {...prev, drawingHistory: drawings} })
+//   })
+
+//   return () => {
+//     socket.removeListener("receive-undo")
+//   }
+//  },[setRoom, socket])
 
  // Trying to be responsive
  const handleSizeChange = useCallback(() => {

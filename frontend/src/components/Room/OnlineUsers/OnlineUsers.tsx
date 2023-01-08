@@ -67,13 +67,23 @@ const OnlineUsers: FC<SocketRef> = ({socket}) => {
       socket.removeListener("logout-user")
     })
   },[removeFromOnlineList, socket])
+
+  useEffect(() => {
+    socket.on("new-admin", (username) => {
+      setRoom((prev) => { return {...prev, userWhoOpened: username} })
+    })
+    return () => {
+      socket.removeListener("new-admin")
+    }
+  },[setRoom, socket])
   
   
   return (
     <div className='online-users' ref={containerRef}>
       <u><h3>Online Users</h3></u>
       {room.onlineUsers.map((user, index) => {
-        return <div key={`${user}${index}`} className="online-user">{user}</div>
+        return user === room.userWhoOpened ? <div key={`${user}${index}`} className="online-user">{user} - Admin</div>
+        : <div key={`${user}${index}`} className="online-user">{user}</div>
       })}
     </div>
   )

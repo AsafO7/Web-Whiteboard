@@ -12,6 +12,12 @@ export interface drawingProps {
   width: number
 }
 
+export interface PaintUIProps {
+  drawingStats: drawingProps, setDrawingStats: React.Dispatch<React.SetStateAction<drawingProps>>
+}
+
+export type SocketDrawingProps = SocketRef & PaintUIProps
+
 const Room: FC<SocketRef> = ({socket}) => {
   const [drawingStats, setDrawingStats] = useState<drawingProps>({ shape: "pen", color: "#000000", width: 5})
 
@@ -26,7 +32,7 @@ const Room: FC<SocketRef> = ({socket}) => {
       <OnlineUsers socket={socket}/>
       <Whiteboard socket={socket} drawingStats={drawingStats} setDrawingStats={setDrawingStats}/>
       <Chat socket={socket}/>
-      <PaintUI drawingStats={drawingStats} setDrawingStats={setDrawingStats}/>
+      <PaintUI drawingStats={drawingStats} setDrawingStats={setDrawingStats} socket={socket}/>
     </div>/* : <h1>Redirecting to lobby</h1>*/}
     </>
   )

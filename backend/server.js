@@ -30,6 +30,7 @@ app.use(errorHandler);
 app.use('/lobby', lobbyRoutes)
 app.use('/room', roomsRoutes)
 
+// Logout user from room\site
 app.post('/', async (req, res) => {
     const { name, email, currentRoom } = req.body
     try {
@@ -47,7 +48,7 @@ app.post('/', async (req, res) => {
                 else {
                     await Room.updateOne({ currentRoom }, {
                         $set: {
-                            onlineUsers: onlineUsersList
+                            onlineUsers: onlineUsersList,
                         }
                     }).clone()
                 }
@@ -98,13 +99,25 @@ io.sockets.on("connection", socket => {
         console.log(`${user.name} joined the room`)
         socket.to(roomId).emit("add-user-to-list", user.name, roomId)
     })
-    socket.on("disconnect", () => {
+
+    socket.on("disconnect", async() => {
         const userToSend = users.find(user => user.socketId === socket.id)
         if(!userToSend) return
+        const room = await Room.findOne({ id: roomId })
         users = users.filter(user => user.username !== userToSend.username)
         socket.leave(roomId)
         console.log(`${userToSend.username} left the room`)
         socket.to(roomId).emit("logout-user", userToSend.username)
+
+        // Give admin benefits to next in line user
+        if(room && userToSend.username === room.userWhoOpened && room.onlineUsers.length > 1) {
+            await Room.updateOne({ roomId }, {
+                $set: {
+                    userWhoOpened: room.onlineUsers[1]
+                }
+            }).clone()
+            socket.to(roomId).emit("new-admin", room.onlineUsers[1])
+        }
         roomId = ""
     })
 
@@ -123,12 +136,35 @@ io.sockets.on("connection", socket => {
         const room = await Room.findOne({ id: currRoom })
         let drawings = room.drawingHistory
         drawings.push({path, color, width})
-        await Room.updateOne({ currRoom }, {
+        await Room.updateOne({ id: currRoom }, {
             $set: { 
               drawingHistory: drawings
             }
         }).clone()
         socket.to(roomId).emit("update-drawings", drawings)
+    })
+
+    /***************** PaintUI *****************/
+    socket.on("send-undo", async(currRoom) => {
+        const room = await Room.findOne({ id: currRoom })
+        let drawings = room.drawingHistory
+        drawings.pop()
+        await Room.updateOne({ id: currRoom }, {
+            $set: { 
+            drawingHistory: drawings
+            }
+        }).clone()
+        socket.to(roomId).emit("update-drawings", drawings)
+    })
+
+    socket.on("send-clear", async(currRoom) => {
+        const room = await Room.findOne({ id: currRoom })
+        await Room.updateOne({ id: currRoom }, {
+            $set: { 
+            drawingHistory: []
+            }
+        }).clone()
+        socket.to(roomId).emit("update-drawings", [])
     })
 })
 

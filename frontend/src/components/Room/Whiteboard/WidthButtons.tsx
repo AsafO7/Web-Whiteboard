@@ -1,5 +1,6 @@
 import { FC } from "react"
-import { PaintUIProps } from "../PaintUI/PaintUI"
+import { PaintUIProps } from "../Room"
+
 
 
 const WidthButtons: FC<PaintUIProps> = ({drawingStats ,setDrawingStats}) => {

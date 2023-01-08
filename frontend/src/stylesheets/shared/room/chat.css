@@ -1,6 +1,6 @@
 .chat {
     flex-basis: 15%;
-    max-height: 80%;
+    max-height: 83%;
     background-color: white;
     display: flex;
     flex-direction: column;
@@ -38,7 +38,7 @@
 
 #chat-msg-form {
     display: flex;
-    margin: 2px;
+    margin: 2px 4px;
 }
 
 .text-area {

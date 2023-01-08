@@ -1,37 +1,28 @@
-// import { useCallback, useEffect, useRef } from 'react'
-// import { useComponentsSizeToSubstractContext } from '../../../contexts/ComponentsSizeToSubstractProvider'
-
 import { FC } from "react"
-import { drawingProps } from "../Room"
+import { useRoomContext } from "../../../contexts/RoomProvider"
+import { useUserContext } from "../../../contexts/UserProvider"
+import { SocketDrawingProps } from "../Room"
 import WidthButtons from "../Whiteboard/WidthButtons"
 
-export interface PaintUIProps {
-  drawingStats: drawingProps, setDrawingStats: React.Dispatch<React.SetStateAction<drawingProps>>
-}
+const PaintUI: FC<SocketDrawingProps> = ({drawingStats, setDrawingStats, socket}) => {
 
-const PaintUI: FC<PaintUIProps> = ({drawingStats, setDrawingStats}) => {
+  const { user } = useUserContext()
+  const { room, setRoom } = useRoomContext()
 
-  // const [color, setColor] = useState<string>("")
+  function handleUndo() {
+    if(room.drawingHistory.length === 0) return
+    const drawings = room.drawingHistory
+    drawings.pop()
+    socket.emit("send-undo", room.id)
+    setRoom(prev => { return {...prev, drawingHistory: drawings} })
+  }
 
-  // const { headerHeight, setHeaderHeight } = useComponentsSizeToSubstractContext()
-  // const containerRef = useRef<HTMLDivElement>(null)
-
-  // const handleSizeChange = useCallback(() => {
-  //   console.log(containerRef.current)
-    
-  //   if(containerRef.current && headerHeight !== containerRef.current?.offsetHeight) {
-  //     setHeaderHeight(containerRef.current?.offsetHeight)
-  //   }
-  // },[headerHeight, setHeaderHeight])
-
-  // useEffect(() => {
-  //   window.addEventListener("resize", handleSizeChange)
-    
-  //   return () => {
-  //     window.removeEventListener("resize", handleSizeChange)
-  //   }
-  // },[containerRef.current?.offsetHeight, handleSizeChange])
-
+  function handleClear() {
+    if(user.name !== room.userWhoOpened) return
+    if(room.drawingHistory.length === 0) return
+    socket.emit("send-clear", room.id)
+    setRoom(prev => { return {...prev, drawingHistory: []} })
+  }
 
   return (
     <div className='paint-ui'>
@@ -39,6 +30,8 @@ const PaintUI: FC<PaintUIProps> = ({drawingStats, setDrawingStats}) => {
         <label htmlFor="color">Color:</label>
         <input type="color" id="color" onChange={e => setDrawingStats({...drawingStats, color: e.target.value})}></input>
         <WidthButtons drawingStats={drawingStats} setDrawingStats={setDrawingStats}/>
+        <button className="paintui-btn undo-btn" onClick={handleUndo}>Undo</button>
+        <button className="paintui-btn clear-btn" onClick={handleClear}>Clear</button>
       </div>
     </div>
   )
