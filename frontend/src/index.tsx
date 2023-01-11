@@ -3,10 +3,10 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import './stylesheets/main.css'
 import { BrowserRouter } from 'react-router-dom';
-import { UserProvider } from './contexts/UserProvider';
-import { RoomsProvider } from './contexts/RoomsProvider';
-import { RoomProvider } from './contexts/RoomProvider';
-import { ComponentsSizeToSubstractProvider } from './contexts/ComponentsSizeToSubstractProvider';
+import { UserProvider } from './Contexts/UserProvider';
+import { RoomsProvider } from './Contexts/RoomsProvider';
+import { RoomProvider } from './Contexts/RoomProvider';
+import { ComponentsSizeToSubstractProvider } from './Contexts/ComponentsSizeToSubstractProvider';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);

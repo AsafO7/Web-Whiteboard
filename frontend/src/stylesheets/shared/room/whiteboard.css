@@ -1,12 +1,15 @@
 .whiteboard {
     flex-grow: 1;
+    flex-basis: 53%;
     max-height: 83%;
     min-height: 83%;
-    padding: 2px;
+    /* padding: 2px; */
     background-color: white;
 }
 
 #canvas {
     border: 2px solid red;
+    width: 100%;
+    height: 100%;
 }
 

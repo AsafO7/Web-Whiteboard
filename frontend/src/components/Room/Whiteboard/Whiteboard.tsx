@@ -1,20 +1,20 @@
-import { FC, useRef, useCallback, useEffect} from 'react'
-import { useComponentsSizeToSubstractContext } from '../../../contexts/ComponentsSizeToSubstractProvider'
-import { useOnDraw } from './useOnDraw'
-import { useRoomContext } from '../../../contexts/RoomProvider'
-import { Point } from '../../../contexts/RoomsProvider'
+import { FC, useRef, useCallback, useEffect, useState} from 'react'
+// import { useComponentsSizeToSubstractContext } from '../../../Contexts/ComponentsSizeToSubstractProvider'
+import { useOnDraw } from '../../../Hooks/useOnDraw'
+import { useRoomContext } from '../../../Contexts/RoomProvider'
+import { Point } from '../../../Contexts/RoomsProvider'
 import { SocketDrawingProps } from '../Room'
-
-// import { Point } from '../../../contexts/RoomsProvider'
-
 
 
 const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, setDrawingStats}) => {
-  const { chatWidth, onlineUsersWidth , headerHeight/*, paintUIHeight*/ } = useComponentsSizeToSubstractContext()
+  // const { chatWidth, onlineUsersWidth , headerHeight/*, paintUIHeight*/ } = useComponentsSizeToSubstractContext()
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const windowWidthRef = useRef<number>(window.innerWidth)
-  const windowHeightRef = useRef<number>(window.innerHeight)
+  // const windowWidthRef = useRef<number>(window.innerWidth)
+  // const windowHeightRef = useRef<number>(window.innerHeight)
+
+  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth)
+  const [windowHeight, setWindowHeight] = useState<number>(window.innerHeight)
 
   const {room, setRoom} = useRoomContext()
 
@@ -48,7 +48,6 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, setDrawingSta
         ctx.arc(start.x, start.y, 2, 0, 2 * Math.PI) // Draw a circle from point
         ctx.fill() // Fill the circle
         
-        
         if(isDrawingRef.current === true) socket.emit("send-drawing", start, end, drawingStats.color, drawingStats.width)
       }
   },[drawingStats.color, drawingStats.width, isDrawingRef, socket])
@@ -66,13 +65,13 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, setDrawingSta
  const redraw = useCallback(() => {  
   // if(room.drawingHistory.length === 0) return
   // Clear the canvas to prevent lags
-  getCanvasRef()?.getContext("2d")?.clearRect(0,0,windowWidthRef.current, windowHeightRef.current)
+  getCanvasRef()?.getContext("2d")?.clearRect(0,0,windowWidth, windowHeight)
   for(let i = 0; i < room.drawingHistory.length; i++) {
     for(let j = 0; j < room.drawingHistory[i].path.length - 1; j++) {
       drawLine(room.drawingHistory[i].path[j], room.drawingHistory[i].path[j+1], getCanvasRef()?.getContext("2d"), room.drawingHistory[i].color, room.drawingHistory[i].width)
     } 
   }
- },[room.drawingHistory, getCanvasRef, drawLine])
+ },[getCanvasRef, windowWidth, windowHeight, room.drawingHistory, drawLine])
 
  // Updates the room's drawings through the backend
  useEffect(() => {
@@ -85,32 +84,24 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, setDrawingSta
   }
  },[setRoom, socket])
 
-//  useEffect(() => {
-//   socket.on("receive-undo", (drawings: {path: Point[], color: string, width: number}[]) => {
-//     setRoom(prev => { return {...prev, drawingHistory: drawings} })
-//   })
 
-//   return () => {
-//     socket.removeListener("receive-undo")
-//   }
-//  },[setRoom, socket])
-
- // Trying to be responsive
- const handleSizeChange = useCallback(() => {
-  if(windowWidthRef.current !== window.innerWidth) windowWidthRef.current = window.innerWidth
-  if(windowHeightRef.current !== window.innerHeight) windowHeightRef.current = window.innerHeight
-  redraw()
-},[redraw])
 
 useEffect(() => {
+   // Trying to be responsive
+  const handleSizeChange = () => {
+    if(windowWidth !== window.innerWidth) setWindowWidth(window.innerWidth)
+    if(windowHeight !== window.innerHeight) setWindowHeight(window.innerHeight)
+    redraw()
+  }
+
   window.addEventListener("resize", handleSizeChange)
   
   return () => {
     window.removeEventListener("resize", handleSizeChange)
   }
-},[handleSizeChange, redraw])
+},[getCanvasRef, redraw, windowHeight, windowWidth])
 
-  // Receiving the drawing history
+// Receiving the drawing history
   useEffect(() => {
     redraw()
 },[redraw])
@@ -119,12 +110,9 @@ useEffect(() => {
 
   return (
     <div className='whiteboard' ref={containerRef}>
-      {/* <canvas id='canvas' ref={setCanvasRef} onMouseDown={onMouseDown}
-        width={window.innerWidth > 1000 ? Math.abs(window.innerWidth - chatWidth - onlineUsersWidth) - 150 : window.innerWidth - 100} 
-        height={containerRef.current ? containerRef.current?.clientHeight - 3 : 700}></canvas> */}
         <canvas id='canvas' ref={setCanvasRef} onMouseDown={onMouseDown} 
-        width={window.innerWidth > 1000 ? windowWidthRef.current - chatWidth - onlineUsersWidth - 150 : window.innerWidth - 100}
-        height={windowHeightRef.current - headerHeight - 150}></canvas>
+        width={800}
+        height={600}></canvas>
     </div>
   )
 }
