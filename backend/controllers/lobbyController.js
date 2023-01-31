@@ -10,9 +10,9 @@ const getLobbyInfo = async (req, res) => {
             res.status(200).send("Please log in first")
             return
         }
-        const user = await User.findOne({ email })
+        const user = await User.findOne({ email: email })
         if(user.isLoggedIn === false) {
-            await User.updateOne({ email }, {
+            await User.updateOne({ email: email }, {
                 $set: { 
                   isLoggedIn: true,
                   currentRoom: "",
@@ -41,8 +41,8 @@ const loginUser = async (req, res) => {
 
     try {
         // Check if user exists
-        const userExistsEmail = await User.findOne({ email })
-        const userExistsName = await User.findOne({ name })
+        const userExistsEmail = await User.findOne({ email: email })
+        const userExistsName = await User.findOne({ name: name })
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
         
         // Email exists, check for correct input (username or password might be wrong)

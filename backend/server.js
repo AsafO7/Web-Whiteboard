@@ -13,6 +13,8 @@ const Room = require('./models/Room');
 const http = require('http');
 const { Server } = require("socket.io");
 const server = http.createServer(app);
+
+
 const io = new Server(server, {
     cors: {
         origin: "http://localhost:3000",
@@ -43,10 +45,10 @@ app.post('/', async (req, res) => {
                 onlineUsersList = onlineUsersList.filter((roomUser) => roomUser !== name)
                 if(onlineUsersList.length === 0) {
                     // Delete the room
-                    await Room.deleteOne({ currentRoom }).clone()
+                    await Room.deleteOne({ id: currentRoom }).clone()
                 }
                 else {
-                    await Room.updateOne({ currentRoom }, {
+                    await Room.updateOne({ id: currentRoom }, {
                         $set: {
                             onlineUsers: onlineUsersList,
                         }
@@ -54,7 +56,7 @@ app.post('/', async (req, res) => {
                 }
             }
             // Change state in database
-            await User.updateOne({ email }, {
+            await User.updateOne({ email: email }, {
                 $set: { 
                   isLoggedIn: false,
                   currentRoom: "",
@@ -83,6 +85,7 @@ else {
     app.get('/', (req, res) => res.send('Please set to production'));
 }
 
+/************************************* Socket.io ************************************/
 
 // let rooms = []
 let users = []
@@ -111,7 +114,7 @@ io.sockets.on("connection", socket => {
 
         // Give admin benefits to next in line user
         if(room && userToSend.username === room.userWhoOpened && room.onlineUsers.length > 1) {
-            await Room.updateOne({ roomId }, {
+            await Room.updateOne({ id: roomId }, {
                 $set: {
                     userWhoOpened: room.onlineUsers[1]
                 }

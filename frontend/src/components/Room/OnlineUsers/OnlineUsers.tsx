@@ -37,7 +37,6 @@ const OnlineUsers: FC<SocketRef> = ({socket}) => {
       if(room.onlineUsers.indexOf(newUser) !== -1 || room.id !== newUserRoomId) return
       let newUsersList = room.onlineUsers
       newUsersList.push(newUser)
-      // const newRoomInfo = { name: room.name, id: room.id, userWhoOpened: room.userWhoOpened, onlineUsers: newUsersList, drawingHistory: room.drawingHistory}
       setRoom((prev) => { return {...prev, onlineUsers: newUsersList} })
   },[room.id, room.onlineUsers, setRoom])
 
@@ -55,7 +54,6 @@ const OnlineUsers: FC<SocketRef> = ({socket}) => {
     let newUsersList = room.onlineUsers
     if(newUsersList.indexOf(username) === -1) return
     newUsersList = newUsersList.filter((name) => name !== username)
-    // const newRoomInfo = { name: room.name, id: room.id, userWhoOpened: room.userWhoOpened, onlineUsers: newUsersList, drawingHistory: room.drawingHistory}
     setRoom((prev) => { return {...prev, onlineUsers: newUsersList} })
   },[room.onlineUsers, setRoom])
   
@@ -82,7 +80,9 @@ const OnlineUsers: FC<SocketRef> = ({socket}) => {
     <div className='online-users' ref={containerRef}>
       <u><h3>Online Users</h3></u>
       {room.onlineUsers.map((user, index) => {
-        return user === room.userWhoOpened ? <div key={`${user}${index}`} className="online-user">{user} - Admin</div>
+        return user === room.userWhoOpened ? <div key={`${user}${index}`} className="online-user">
+          {user}<span style={{fontSize: "0.8rem", fontWeight: "bold", color: "red", letterSpacing: "1px"}}> - Admin</span>
+        </div>
         : <div key={`${user}${index}`} className="online-user">{user}</div>
       })}
     </div>

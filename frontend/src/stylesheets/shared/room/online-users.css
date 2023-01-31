@@ -10,3 +10,7 @@
     font-family: 'Anton', sans-serif;
     letter-spacing: 2px;
 }
+
+@media screen and (max-width: 1000px) {
+    .online-users { order: 2; flex-basis: 35%;}
+}

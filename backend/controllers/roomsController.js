@@ -51,7 +51,7 @@ const getRoomInfo = async (req, res) => {
         return
     }
     try {
-        const room = await Room.findOne({ roomId }).exec()
+        const room = await Room.findOne({ id: roomId }).exec()
         if(room) {
             // if the user isn't in the online users list of the room
             if(room.onlineUsers.indexOf(username) === -1) {
@@ -90,18 +90,18 @@ const updateOnlineUsersRoom = async (req, res) => {
     // Update online users for rooms
     try {
         let onlineUsersList = []
-        const currUser = await User.findOne({ email })
-        const userCurrRoom = await Room.findOne({ currentRoom })
+        const currUser = await User.findOne({ email: email })
+        const userCurrRoom = await Room.findOne({ id: currentRoom })
         // found the user and their previous room
         if(currUser && userCurrRoom) {
             // found the room
             onlineUsersList = userCurrRoom.onlineUsers.filter((roomUser) => roomUser !== name)
             if(onlineUsersList.length === 0) {
                 // Delete the room
-                await Room.deleteOne({ currentRoom }).clone()
+                await Room.deleteOne({ id: currentRoom }).clone()
             }
             else {
-                await Room.updateOne({ currentRoom }, {
+                await Room.updateOne({ id: currentRoom }, {
                     $set: {
                         onlineUsers: onlineUsersList
                     }

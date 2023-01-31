@@ -66,6 +66,8 @@
 @media screen and (max-width: 1000px) {
     .chat {
         max-height: 60%;
+        order: 3;
+        flex-basis: 65%;
     }
 
     #chat-msg-form {
