@@ -1,8 +1,8 @@
 import { FC, useRef, useCallback, useEffect, useState} from 'react'
 // import { useComponentsSizeToSubstractContext } from '../../../Contexts/ComponentsSizeToSubstractProvider'
 import { useOnDraw } from '../../../Hooks/useOnDraw'
-import { useRoomContext } from '../../../Contexts/RoomProvider'
-import { Point } from '../../../Contexts/RoomsProvider'
+import { useRoomContext } from '../../../contexts/RoomProvider'
+import { Point } from '../../../contexts/RoomsProvider'
 import { SocketDrawingProps } from '../Room'
 
 

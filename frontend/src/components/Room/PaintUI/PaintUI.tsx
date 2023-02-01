@@ -1,6 +1,6 @@
 import { FC } from "react"
-import { useRoomContext } from "../../../Contexts/RoomProvider"
-import { useUserContext } from "../../../Contexts/UserProvider"
+import { useRoomContext } from "../../../contexts/RoomProvider"
+import { useUserContext } from "../../../contexts/UserProvider"
 import { SocketDrawingProps } from "../Room"
 import WidthButtons from "./WidthButtons"
 

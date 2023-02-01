@@ -2,12 +2,12 @@ import { FC, useCallback, useEffect, useState } from 'react'
 import LobbyHeader from './LobbyHeader'
 import CreateRoomForm from './CreateRoomForm'
 import RoomsList from './RoomsList'
-import { useUserContext } from '../../Contexts/UserProvider'
+import { useUserContext } from '../../contexts/UserProvider'
 import { getLobbyInfo, updateUserRoom } from '../../app/apiCalls'
-import { useRoomsContext } from '../../Contexts/RoomsProvider'
+import { useRoomsContext } from '../../contexts/RoomsProvider'
 import { DefaultEventsMap } from 'socket.io/dist/typed-events'
 import { Socket } from 'socket.io-client'
-import { useRoomContext } from '../../Contexts/RoomProvider'
+import { useRoomContext } from '../../contexts/RoomProvider'
 
 export interface LoadingState {
   loading: boolean,

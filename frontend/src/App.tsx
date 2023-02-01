@@ -6,9 +6,9 @@ import { logoutUser } from './app/apiCalls';
 // import Lobby from './components/Lobby/Lobby';
 // import Login from './components/Login/Login';
 // import Room from './components/Room/Room';
-import { useRoomContext } from './Contexts/RoomProvider';
+import { useRoomContext } from './contexts/RoomProvider';
 // import { useRoomsContext } from './contexts/RoomsProvider';
-import { useUserContext } from './Contexts/UserProvider';
+import { useUserContext } from './contexts/UserProvider';
 
 const Lobby = lazy(() => import("./components/Lobby/Lobby"))
 const Login = lazy(() => import("./components/Login/Login"))

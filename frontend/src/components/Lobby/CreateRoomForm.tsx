@@ -2,9 +2,9 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidV4 } from 'uuid';
 import { createRoom } from "../../app/apiCalls";
-import { useRoomContext } from "../../Contexts/RoomProvider";
-import { useRoomsContext } from "../../Contexts/RoomsProvider";
-import { useUserContext } from "../../Contexts/UserProvider";
+import { useRoomContext } from "../../contexts/RoomProvider";
+import { useRoomsContext } from "../../contexts/RoomsProvider";
+import { useUserContext } from "../../contexts/UserProvider";
 
 
 function CreateRoomForm() {

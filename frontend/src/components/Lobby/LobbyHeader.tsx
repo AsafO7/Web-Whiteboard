@@ -1,7 +1,7 @@
 import { FC} from 'react'
 import { useNavigate } from 'react-router-dom'
 import { logoutUser } from '../../app/apiCalls'
-import { useUserContext } from '../../Contexts/UserProvider'
+import { useUserContext } from '../../contexts/UserProvider'
 
 
 const LobbyHeader: FC = () => {

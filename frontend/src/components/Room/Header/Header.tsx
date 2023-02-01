@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { useComponentsSizeToSubstractContext } from '../../../Contexts/ComponentsSizeToSubstractProvider'
-import { useRoomContext } from '../../../Contexts/RoomProvider'
+import { useComponentsSizeToSubstractContext } from '../../../contexts/ComponentsSizeToSubstractProvider'
+import { useRoomContext } from '../../../contexts/RoomProvider'
 
 function Header() {
   const { room } = useRoomContext()
