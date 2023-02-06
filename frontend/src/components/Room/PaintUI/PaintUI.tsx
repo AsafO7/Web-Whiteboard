@@ -4,7 +4,7 @@ import { useUserContext } from "../../../contexts/UserProvider"
 import { SocketDrawingProps } from "../Room"
 import WidthButtons from "./WidthButtons"
 
-const PaintUI: FC<SocketDrawingProps> = ({drawingStats, setDrawingStats, socket}) => {
+const PaintUI: FC<SocketDrawingProps> = ({drawingStats, setDrawingStats, socket, setIsEraser, isEraser}) => {
 
   const { user } = useUserContext()
   const { room, setRoom } = useRoomContext()
@@ -32,6 +32,8 @@ const PaintUI: FC<SocketDrawingProps> = ({drawingStats, setDrawingStats, socket}
         <WidthButtons drawingStats={drawingStats} setDrawingStats={setDrawingStats}/>
         <button className="paintui-btn undo-btn" onClick={handleUndo}>Undo</button>
         <button className="paintui-btn clear-btn" onClick={handleClear}>Clear</button>
+        <button onClick={() => setIsEraser(false)} className={!isEraser ? "pen-btn active" : "pen-btn"}>Draw</button>
+        <button onClick={() => setIsEraser(true)} className={isEraser ? "eraser-btn active" : "eraser-btn"}>Erase</button>
       </div>
     </div>
   )

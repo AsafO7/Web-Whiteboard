@@ -9,7 +9,7 @@
 .paint-ui-grid {
     display: grid;
     /* grid-template-rows: repeat(3fr); */
-    grid-template-columns: auto auto auto auto auto;
+    grid-template-columns: auto auto auto auto auto auto auto;
     /* align-items: center; */
     gap: 10px;
 }
@@ -77,4 +77,15 @@
 .clear-btn {
   background-image: linear-gradient(#b82727, #941010);
   border: 1px solid #cc0000;
+}
+
+.pen-btn, .eraser-btn {
+    position: relative;
+}
+
+.pen-btn:active, .eraser-btn:active, .active {
+  /* top: 1px; */
+  left: 1px;
+  box-shadow: none;
+  background-color: rgb(205, 205, 205);
 }

@@ -3,11 +3,7 @@ import { useEffect, useRef } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { io } from 'socket.io-client';
 import { logoutUser } from './app/apiCalls';
-// import Lobby from './components/Lobby/Lobby';
-// import Login from './components/Login/Login';
-// import Room from './components/Room/Room';
 import { useRoomContext } from './contexts/RoomProvider';
-// import { useRoomsContext } from './contexts/RoomsProvider';
 import { useUserContext } from './contexts/UserProvider';
 
 const Lobby = lazy(() => import("./components/Lobby/Lobby"))
@@ -16,7 +12,6 @@ const Room = lazy(() => import("./components/Room/Room"))
 
 function App() {
   const { user, setUser } = useUserContext()
-  // const { roomsList, setRooms } = useRoomsContext()
   const { setRoom } = useRoomContext()
   const socket = useRef(io(`http://localhost:5000/`))
   
@@ -34,7 +29,6 @@ function App() {
       userWhoOpened: "",
       onlineUsers: [],
       drawingHistory: []})
-      // setRooms(() => roomsList.filter(room => room.id !== user.currentRoom))
       await logoutUser(oldUser)
       return "beforeunload"
     }
@@ -45,9 +39,6 @@ function App() {
       window.removeEventListener('beforeunload', handleTabClose)
     }
   })
-
-  console.log(1)
-  
   
   return (
     <>

@@ -6,8 +6,8 @@ import { Point } from "../contexts/RoomsProvider";
 import { useUserContext } from "../contexts/UserProvider";
 import { drawingProps } from "../components/Room/Room";
 
-export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | undefined, point: Point | null, prevPoint: Point | null): void,
-    }, socket: Socket<DefaultEventsMap, DefaultEventsMap>, drawingStats: drawingProps, setDrawingStats: React.Dispatch<React.SetStateAction<drawingProps>>) {
+export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | undefined, point: Point | null, prevPoint: Point | null, isEraser: boolean): void,
+    }, socket: Socket<DefaultEventsMap, DefaultEventsMap>, drawingStats: drawingProps, setDrawingStats: React.Dispatch<React.SetStateAction<drawingProps>>, isEraser: boolean) {
 
     const { user } = useUserContext()
     const { room } = useRoomContext()
@@ -28,7 +28,7 @@ export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | unde
                     const point = computePointInCanvas(e.clientX, e.clientY)
                     if(point) path.current.push(point)
                     const ctx = canvasRef.current?.getContext("2d")
-                    if(onDraw) onDraw(ctx, point, prevPointRef.current)
+                    if(onDraw) onDraw(ctx, point, prevPointRef.current, isEraser)
                     prevPointRef.current = point
                }
             }
@@ -45,8 +45,8 @@ export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | unde
                 prevPointRef.current = null
                 
                 if(path.current.length !== 0) {
-                    room.drawingHistory.push({path: path.current, color: drawingStats.color, width: drawingStats.width})
-                    socket.emit("save-drawing", path.current, drawingStats.color, drawingStats.width, user.currentRoom)
+                    room.drawingHistory.push({path: path.current, color: drawingStats.color, width: drawingStats.width, isEraser})
+                    socket.emit("save-drawing", path.current, drawingStats.color, drawingStats.width, user.currentRoom, isEraser)
                     path.current = []
                 }
             }
@@ -79,7 +79,7 @@ export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | unde
         return () => {
            removeListeners()
         }
-    },[drawingStats.color, drawingStats.width, onDraw, room.drawingHistory, socket, user.currentRoom])
+    },[drawingStats.color, drawingStats.width, isEraser, onDraw, room.drawingHistory, socket, user.currentRoom])
 
     function setCanvasRef(ref: HTMLCanvasElement | null) {
         if(!ref) return

@@ -6,7 +6,7 @@ import { Point } from '../../../contexts/RoomsProvider'
 import { SocketDrawingProps } from '../Room'
 
 
-const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, setDrawingStats}) => {
+const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, setDrawingStats, isEraser}) => {
   // const { chatWidth, onlineUsersWidth , headerHeight/*, paintUIHeight*/ } = useComponentsSizeToSubstractContext()
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -19,11 +19,11 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, setDrawingSta
   const {room, setRoom} = useRoomContext()
 
   // Sets the ref to the canvas here using the function setCanvasRef in useOnDraw.tsx
-  const {setCanvasRef, onMouseDown, getCanvasRef, isDrawingRef} = useOnDraw(onDraw, socket, drawingStats, setDrawingStats)
+  const {setCanvasRef, onMouseDown, getCanvasRef, isDrawingRef} = useOnDraw(onDraw, socket, drawingStats, setDrawingStats, isEraser)
 
   
-  function onDraw(ctx: CanvasRenderingContext2D | null | undefined, point: Point | null, prevPoint: Point | null) {
-      drawLine(prevPoint, point, ctx, drawingStats.color, drawingStats.width)
+  function onDraw(ctx: CanvasRenderingContext2D | null | undefined, point: Point | null, prevPoint: Point | null, isEraser: boolean) {
+      drawLine(prevPoint, point, ctx, drawingStats.color, drawingStats.width, isEraser)
   }
 
   const drawLine = useCallback((
@@ -31,10 +31,12 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, setDrawingSta
     end: Point | null,
     ctx: CanvasRenderingContext2D | null | undefined,
     color: string,
-    width: number) => 
+    width: number,
+    isEraser: boolean) => 
     {
       start = start ?? end
       if(ctx && start && end) {
+        ctx.globalCompositeOperation = isEraser ? "destination-out" : "source-over"
         ctx.beginPath()
         ctx.lineWidth = width
         ctx.strokeStyle = color
@@ -48,14 +50,14 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, setDrawingSta
         ctx.arc(start.x, start.y, 2, 0, 2 * Math.PI) // Draw a circle from point
         ctx.fill() // Fill the circle
         
-        if(isDrawingRef.current === true) socket.emit("send-drawing", start, end, drawingStats.color, drawingStats.width)
+        if(isDrawingRef.current === true) socket.emit("send-drawing", start, end, drawingStats.color, drawingStats.width, isEraser)
       }
   },[drawingStats.color, drawingStats.width, isDrawingRef, socket])
 
   // Real time drawing
   useEffect(() => {
-    socket.on("receive-drawing", (start: Point, end: Point, color: string, width: number) => {
-        drawLine(start, end, getCanvasRef()?.getContext("2d"), color, width)
+    socket.on("receive-drawing", (start: Point, end: Point, color: string, width: number, isEraser) => {
+        drawLine(start, end, getCanvasRef()?.getContext("2d"), color, width, isEraser)
     })
     return(() => {
       socket.removeListener("receive-drawing")
@@ -68,14 +70,15 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, setDrawingSta
   getCanvasRef()?.getContext("2d")?.clearRect(0,0,windowWidth, windowHeight)
   for(let i = 0; i < room.drawingHistory.length; i++) {
     for(let j = 0; j < room.drawingHistory[i].path.length - 1; j++) {
-      drawLine(room.drawingHistory[i].path[j], room.drawingHistory[i].path[j+1], getCanvasRef()?.getContext("2d"), room.drawingHistory[i].color, room.drawingHistory[i].width)
+      drawLine(room.drawingHistory[i].path[j], room.drawingHistory[i].path[j+1], getCanvasRef()?.getContext("2d"), room.drawingHistory[i].color, room.drawingHistory[i].width,
+      room.drawingHistory[i].isEraser)
     } 
   }
  },[getCanvasRef, windowWidth, windowHeight, room.drawingHistory, drawLine])
 
  // Updates the room's drawings through the backend
  useEffect(() => {
-  socket.on("update-drawings", (drawings: {path: Point[], color: string, width: number}[]) => {
+  socket.on("update-drawings", (drawings: {path: Point[], color: string, width: number, isEraser: boolean}[]) => {
     setRoom(prev => { return {...prev, drawingHistory: drawings} })
   })
 
