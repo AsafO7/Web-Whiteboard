@@ -13,7 +13,7 @@ const Room = lazy(() => import("./components/Room/Room"))
 function App() {
   const { user, setUser } = useUserContext()
   const { setRoom } = useRoomContext()
-  const socket = useRef(io(`http://localhost:5000/`))
+  const socket = useRef(io(`172.105.130.95:5000/`))
   
   useEffect(() => {
     if(user.currentRoom === "") socket.current.close()

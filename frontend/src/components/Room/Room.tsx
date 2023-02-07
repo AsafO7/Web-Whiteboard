@@ -7,7 +7,7 @@ import PaintUI from './PaintUI/PaintUI';
 import Whiteboard from './Whiteboard/Whiteboard';
 
 export interface drawingProps {
-  shape: string
+  // shape: string
   color: string,
   width: number
 }
@@ -18,13 +18,14 @@ interface isEraser {
 }
 
 export interface PaintUIProps {
-  drawingStats: drawingProps, setDrawingStats: React.Dispatch<React.SetStateAction<drawingProps>>
+  drawingStats: drawingProps,
+  setDrawingStats: React.Dispatch<React.SetStateAction<drawingProps>>
 }
 
 export type SocketDrawingProps = SocketRef & PaintUIProps & isEraser
 
 const Room: FC<SocketRef> = ({socket}) => {
-  const [drawingStats, setDrawingStats] = useState<drawingProps>({ shape: "pen", color: "#000000", width: 5})
+  const [drawingStats, setDrawingStats] = useState<drawingProps>({color: "#000000", width: 5})
   const [isEraser, setIsEraser] = useState<boolean>(false)
 
   useEffect(() => {

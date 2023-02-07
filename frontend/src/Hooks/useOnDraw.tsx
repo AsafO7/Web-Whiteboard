@@ -7,7 +7,7 @@ import { useUserContext } from "../contexts/UserProvider";
 import { drawingProps } from "../components/Room/Room";
 
 export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | undefined, point: Point | null, prevPoint: Point | null, isEraser: boolean): void,
-    }, socket: Socket<DefaultEventsMap, DefaultEventsMap>, drawingStats: drawingProps, setDrawingStats: React.Dispatch<React.SetStateAction<drawingProps>>, isEraser: boolean) {
+    }, socket: Socket<DefaultEventsMap, DefaultEventsMap>, drawingStats: drawingProps, isEraser: boolean) {
 
     const { user } = useUserContext()
     const { room } = useRoomContext()

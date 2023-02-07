@@ -6,7 +6,7 @@ import { Point } from '../../../contexts/RoomsProvider'
 import { SocketDrawingProps } from '../Room'
 
 
-const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, setDrawingStats, isEraser}) => {
+const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, isEraser}) => {
   // const { chatWidth, onlineUsersWidth , headerHeight/*, paintUIHeight*/ } = useComponentsSizeToSubstractContext()
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -19,7 +19,7 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, setDrawingSta
   const {room, setRoom} = useRoomContext()
 
   // Sets the ref to the canvas here using the function setCanvasRef in useOnDraw.tsx
-  const {setCanvasRef, onMouseDown, getCanvasRef, isDrawingRef} = useOnDraw(onDraw, socket, drawingStats, setDrawingStats, isEraser)
+  const {setCanvasRef, onMouseDown, getCanvasRef, isDrawingRef} = useOnDraw(onDraw, socket, drawingStats, isEraser)
 
   
   function onDraw(ctx: CanvasRenderingContext2D | null | undefined, point: Point | null, prevPoint: Point | null, isEraser: boolean) {
