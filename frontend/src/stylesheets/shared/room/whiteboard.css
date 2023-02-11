@@ -9,11 +9,13 @@
 
 #canvas {
     border: 2px solid red;
-    width: 100%;
-    height: 100%;
+    display: flex;
+    margin: auto;
+    /* width: 100%;
+    height: 100%; */
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1330px) {
     .whiteboard { order: 4; flex-basis: 100%;}
 }
 

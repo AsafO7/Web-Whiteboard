@@ -63,7 +63,7 @@
   white-space: nowrap;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1330px) {
     .chat {
         max-height: 60%;
         order: 3;

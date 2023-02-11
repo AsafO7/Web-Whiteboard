@@ -11,6 +11,6 @@
     letter-spacing: 2px;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1330px) {
     .online-users { order: 2; flex-basis: 35%;}
 }
