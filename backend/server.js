@@ -135,10 +135,10 @@ io.sockets.on("connection", socket => {
         socket.to(roomId).emit("receive-drawing", start, end, color, width, isEraser)
     })
 
-    socket.on("save-drawing", async(path, color, width, currRoom, isEraser) => {
+    socket.on("save-drawing", async(path, color, width, currRoom, isEraser, userWhoDrew) => {
         const room = await Room.findOne({ id: currRoom })
         let drawings = room.drawingHistory
-        drawings.push({path, color, width, isEraser})
+        drawings.push({path, color, width, isEraser, userWhoDrew})
         await Room.updateOne({ id: currRoom }, {
             $set: { 
               drawingHistory: drawings
@@ -148,26 +148,30 @@ io.sockets.on("connection", socket => {
     })
 
     /***************** PaintUI *****************/
-    socket.on("send-undo", async(currRoom) => {
+    socket.on("send-undo", async(currRoom, drawings) => {
         const room = await Room.findOne({ id: currRoom })
-        let drawings = room.drawingHistory
-        drawings.pop()
-        await Room.updateOne({ id: currRoom }, {
-            $set: { 
-            drawingHistory: drawings
-            }
-        }).clone()
-        socket.to(roomId).emit("update-drawings", drawings)
+        // let drawings = room.drawingHistory
+        // drawings.pop()
+        if(room) {
+            await Room.updateOne({ id: currRoom }, {
+                $set: { 
+                drawingHistory: drawings
+                }
+            }).clone()
+            socket.to(roomId).emit("update-drawings", drawings)
+        }
     })
 
     socket.on("send-clear", async(currRoom) => {
         const room = await Room.findOne({ id: currRoom })
-        await Room.updateOne({ id: currRoom }, {
-            $set: { 
-            drawingHistory: []
-            }
-        }).clone()
-        socket.to(roomId).emit("update-drawings", [])
+        if(room) {
+            await Room.updateOne({ id: currRoom }, {
+                $set: { 
+                drawingHistory: []
+                }
+            }).clone()
+            socket.to(roomId).emit("update-drawings", [])
+        }
     })
 })
 

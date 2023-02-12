@@ -45,8 +45,8 @@ export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | unde
                 prevPointRef.current = null
                 
                 if(path.current.length !== 0) {
-                    room.drawingHistory.push({path: path.current, color: drawingStats.color, width: drawingStats.width, isEraser})
-                    socket.emit("save-drawing", path.current, drawingStats.color, drawingStats.width, user.currentRoom, isEraser)
+                    room.drawingHistory.push({path: path.current, color: drawingStats.color, width: drawingStats.width, isEraser, userWhoDrew: user.name})
+                    socket.emit("save-drawing", path.current, drawingStats.color, drawingStats.width, user.currentRoom, isEraser, user.name)
                     path.current = []
                 }
             }
@@ -79,7 +79,7 @@ export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | unde
         return () => {
            removeListeners()
         }
-    },[drawingStats.color, drawingStats.width, isEraser, onDraw, room.drawingHistory, socket, user.currentRoom])
+    },[drawingStats.color, drawingStats.width, isEraser, onDraw, room.drawingHistory, socket, user.currentRoom, user.name])
 
     function setCanvasRef(ref: HTMLCanvasElement | null) {
         if(!ref) return

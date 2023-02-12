@@ -5,12 +5,19 @@ export type Point = {
   y: number,
 }
 
+export type Drawing = {
+  path: Point[],
+  color: string, 
+  width: number, 
+  isEraser: boolean, 
+  userWhoDrew: String}
+
 export interface Room {
     name: String,
     id: String,
     userWhoOpened: String,
     onlineUsers: String[],
-    drawingHistory: {path: Point[], color: string, width: number, isEraser: boolean}[],
+    drawingHistory: Drawing[],
 }
 
 interface Rooms {

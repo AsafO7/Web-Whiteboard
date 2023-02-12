@@ -1,5 +1,6 @@
 import { FC } from "react"
 import { useRoomContext } from "../../../contexts/RoomProvider"
+import { Drawing } from "../../../contexts/RoomsProvider"
 import { useUserContext } from "../../../contexts/UserProvider"
 import { SocketDrawingProps } from "../Room"
 import WidthButtons from "./WidthButtons"
@@ -11,10 +12,26 @@ const PaintUI: FC<SocketDrawingProps> = ({drawingStats, setDrawingStats, socket,
 
   function handleUndo() {
     if(room.drawingHistory.length === 0) return
-    const drawings = room.drawingHistory
-    drawings.pop()
-    socket.emit("send-undo", room.id)
-    setRoom(prev => { return {...prev, drawingHistory: drawings} })
+    const tempDrawings = room.drawingHistory
+    let drawings: Drawing[] = []
+    let drawingInd = -1
+    for(let i = tempDrawings.length - 1; i > -1; i--) {
+      if(tempDrawings[i].userWhoDrew === user.name) {
+        console.log(tempDrawings)
+        drawingInd = i
+        break
+      }
+    }
+    if(drawingInd !== -1) {
+      for(let j = 0; j < tempDrawings.length; j++) {
+        if(j !== drawingInd) {
+          drawings.push(tempDrawings[j])
+        }
+      }
+      console.log(drawings)
+      socket.emit("send-undo", room.id, drawings)
+      setRoom(prev => { return {...prev, drawingHistory: drawings} })
+    }
   }
 
   function handleClear() {

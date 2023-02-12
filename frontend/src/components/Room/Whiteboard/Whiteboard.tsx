@@ -70,7 +70,7 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, isEraser}) =>
 
  // Updates the room's drawings through the backend
  useEffect(() => {
-  socket.on("update-drawings", (drawings: {path: Point[], color: string, width: number, isEraser: boolean}[]) => {
+  socket.on("update-drawings", (drawings: {path: Point[], color: string, width: number, isEraser: boolean, userWhoDrew: String}[]) => {
     setRoom(prev => { return {...prev, drawingHistory: drawings} })
   })
 
@@ -78,23 +78,6 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, isEraser}) =>
     socket.removeListener("update-drawings")
   }
  },[setRoom, socket])
-
-
-
-// useEffect(() => {
-//    // Trying to be responsive
-//   const handleSizeChange = () => {
-//     if(windowWidth !== window.innerWidth) setWindowWidth(window.innerWidth)
-//     if(windowHeight !== window.innerHeight) setWindowHeight(window.innerHeight)
-//     redraw()
-//   }
-
-//   window.addEventListener("resize", handleSizeChange)
-  
-//   return () => {
-//     window.removeEventListener("resize", handleSizeChange)
-//   }
-// },[getCanvasRef, redraw, windowHeight, windowWidth])
 
 // Receiving the drawing history
   useEffect(() => {
@@ -107,7 +90,7 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, isEraser}) =>
     <div className='whiteboard' ref={containerRef}>
         <canvas id='canvas' ref={setCanvasRef} onMouseDown={onMouseDown} 
         width={800}
-        height={containerRef.current ? containerRef.current?.offsetHeight - 5 : 800}></canvas>
+        height={600}></canvas>
     </div>
   )
 }
