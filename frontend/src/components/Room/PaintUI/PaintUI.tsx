@@ -47,10 +47,10 @@ const PaintUI: FC<SocketDrawingProps> = ({drawingStats, setDrawingStats, socket,
         <label htmlFor="color">Color:</label>
         <input type="color" id="color" onChange={e => setDrawingStats({...drawingStats, color: e.target.value})}></input>
         <WidthButtons drawingStats={drawingStats} setDrawingStats={setDrawingStats}/>
-        <button className="paintui-btn undo-btn" onClick={handleUndo}>Undo</button>
-        <button className="paintui-btn clear-btn" onClick={handleClear}>Clear</button>
         <button onClick={() => setIsEraser(false)} className={!isEraser ? "pen-btn active" : "pen-btn"}>Draw</button>
         <button onClick={() => setIsEraser(true)} className={isEraser ? "eraser-btn active" : "eraser-btn"}>Erase</button>
+        <button className="paintui-btn undo-btn" onClick={handleUndo}>Undo</button>
+        <button className="paintui-btn clear-btn" onClick={handleClear}>Clear</button>
       </div>
     </div>
   )

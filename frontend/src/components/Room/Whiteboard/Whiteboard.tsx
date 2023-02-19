@@ -13,6 +13,46 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, isEraser}) =>
   // Sets the ref to the canvas here using the function setCanvasRef in useOnDraw.tsx
   const {setCanvasRef, onMouseDown, getCanvasRef, isDrawingRef} = useOnDraw(onDraw, socket, drawingStats, isEraser)
 
+  // const circle = document.getElementById('circle');
+  const circle = useRef<HTMLDivElement>(null)
+  const circleStyle = circle.current?.style;
+
+  useEffect(() => {
+    function followCursor(e: MouseEvent) {
+      window.requestAnimationFrame(() => {
+        if(circleStyle) {
+          circleStyle.top = `${ e.clientY - circle.current.offsetHeight/2 }px`;
+          circleStyle.left = `${ e.clientX - circle.current.offsetWidth/2 }px`;
+          circleStyle.width = `${drawingStats.width}px`
+          circleStyle.height = `${drawingStats.width}px`
+        }
+      });
+    }
+
+    function hideCursor() {
+      if(circleStyle) circleStyle.display = "none"
+    }
+
+    function showCursor() {
+      if(circleStyle && isEraser) circleStyle.display = "block"
+    }
+
+    const cRef = getCanvasRef()
+    cRef?.addEventListener("mousemove", followCursor)
+    cRef?.addEventListener("mouseenter", showCursor)
+    cRef?.addEventListener("mouseleave", hideCursor)
+
+    function removeListeners() {
+      cRef?.removeEventListener("mousemove", followCursor)
+      cRef?.removeEventListener("mouseenter", showCursor)
+      cRef?.removeEventListener("mouseleave", hideCursor)
+    }
+    
+    return () => {
+      removeListeners()
+    }
+  },[circleStyle, drawingStats.width, getCanvasRef, isEraser])
+
   
   function onDraw(ctx: CanvasRenderingContext2D | null | undefined, point: Point | null, prevPoint: Point | null, isEraser: boolean) {
       drawLine(prevPoint, point, ctx, drawingStats.color, drawingStats.width, isEraser)
@@ -85,13 +125,14 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, isEraser}) =>
 },[redraw])
 
 
-
   return (
     <div className='whiteboard' ref={containerRef}>
-        <canvas id='canvas' ref={setCanvasRef} onMouseDown={onMouseDown} 
+        <canvas id='canvas' className={isEraser ? "eraser-cursor" : ""} ref={setCanvasRef} onMouseDown={onMouseDown} 
         width={800}
-        height={600}></canvas>
+        height={800}></canvas>
+        <div id="circle" ref={circle}></div>
     </div>
+    
   )
 }
 
