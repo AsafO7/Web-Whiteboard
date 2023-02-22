@@ -6,7 +6,6 @@ import { SocketDrawingProps } from '../Room'
 
 
 const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, isEraser}) => {
-  const containerRef = useRef<HTMLDivElement>(null)
 
   const {room, setRoom} = useRoomContext()
 
@@ -126,7 +125,7 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, isEraser}) =>
 
 
   return (
-    <div className='whiteboard' ref={containerRef}>
+    <div className='whiteboard'>
         <canvas id='canvas' className={isEraser ? "eraser-cursor" : ""} ref={setCanvasRef} onMouseDown={onMouseDown} 
         width={800}
         height={800}></canvas>

@@ -1,5 +1,4 @@
 import { FC, useCallback, useEffect, useRef } from 'react';
-import { useComponentsSizeToSubstractContext } from '../../../contexts/ComponentsSizeToSubstractProvider';
 import { useRoomContext } from '../../../contexts/RoomProvider';
 import { useUserContext } from '../../../contexts/UserProvider';
 import { SocketRef } from '../../Lobby/Lobby'
@@ -7,24 +6,8 @@ import { SocketRef } from '../../Lobby/Lobby'
 const Chat: FC<SocketRef> = ({socket}) => {
   const { user } = useUserContext()
   const { room } = useRoomContext()
-  const { chatWidth, setChatWidth } = useComponentsSizeToSubstractContext()
   const textRef = useRef<HTMLTextAreaElement>(null)
   const messagesRef = useRef<HTMLDivElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
-
-  const handleSizeChange = useCallback(() => {
-    if(containerRef.current && chatWidth !== containerRef.current?.offsetWidth) {
-      setChatWidth(containerRef.current?.offsetWidth)
-    }
-  },[chatWidth, setChatWidth])
-
-  useEffect(() => {
-    window.addEventListener("resize", handleSizeChange)
-    
-    return () => {
-      window.removeEventListener("resize", handleSizeChange)
-    }
-  },[containerRef.current?.offsetWidth, handleSizeChange])
 
   
   function handleSubmit(e: { preventDefault: () => void; }) {
@@ -57,7 +40,7 @@ const Chat: FC<SocketRef> = ({socket}) => {
   })
 
   return (
-    <div className='chat' ref={containerRef}>
+    <div className='chat'>
       <div className='chat-page'>
         <div className='messages' ref={messagesRef}>{/* Where messages go */}</div>
       </div>

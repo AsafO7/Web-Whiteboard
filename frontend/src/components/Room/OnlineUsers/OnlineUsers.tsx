@@ -1,5 +1,4 @@
-import { FC, useCallback, useEffect, useRef } from "react"
-import { useComponentsSizeToSubstractContext } from "../../../contexts/ComponentsSizeToSubstractProvider"
+import { FC, useCallback, useEffect } from "react"
 import { useRoomContext } from "../../../contexts/RoomProvider"
 import { useUserContext } from "../../../contexts/UserProvider"
 import { SocketRef } from "../../Lobby/Lobby"
@@ -7,22 +6,7 @@ import { SocketRef } from "../../Lobby/Lobby"
 const OnlineUsers: FC<SocketRef> = ({socket}) => {
   const { room, setRoom } = useRoomContext()
   const { user } = useUserContext()
-  const { onlineUsersWidth, setOnlineUsersWidth } = useComponentsSizeToSubstractContext()
-  const containerRef = useRef<HTMLDivElement>(null)
 
-  const handleSizeChange = useCallback(() => {
-    if(containerRef.current && onlineUsersWidth !== containerRef.current?.offsetWidth) {
-      setOnlineUsersWidth(containerRef.current?.offsetWidth)
-    }
-  },[onlineUsersWidth, setOnlineUsersWidth])
-
-  useEffect(() => {
-    window.addEventListener("resize", handleSizeChange)
-    
-    return () => {
-      window.removeEventListener("resize", handleSizeChange)
-    }
-  },[containerRef.current?.offsetWidth, handleSizeChange])
 
   const connectUser = useCallback(() => {
       socket.emit("user-login", user)
@@ -31,6 +15,7 @@ const OnlineUsers: FC<SocketRef> = ({socket}) => {
   useEffect(() => {
       connectUser()
   },[connectUser])
+
 
   const addToOnlineList = useCallback((newUser: string, newUserRoomId: string) => {
       console.log("addToOnlineList")
@@ -49,6 +34,7 @@ const OnlineUsers: FC<SocketRef> = ({socket}) => {
     })
   },[addToOnlineList, socket])
 
+
   const removeFromOnlineList = useCallback((username: string) => {
     console.log("Remove from online list")
     let newUsersList = room.onlineUsers
@@ -66,6 +52,7 @@ const OnlineUsers: FC<SocketRef> = ({socket}) => {
     })
   },[removeFromOnlineList, socket])
 
+  
   useEffect(() => {
     socket.on("new-admin", (username) => {
       setRoom((prev) => { return {...prev, userWhoOpened: username} })
@@ -77,7 +64,7 @@ const OnlineUsers: FC<SocketRef> = ({socket}) => {
   
   
   return (
-    <div className='online-users' ref={containerRef}>
+    <div className='online-users'>
       <u><h3>Online Users</h3></u>
       {room.onlineUsers.map((user, index) => {
         return user === room.userWhoOpened ? <div key={`${user}${index}`} className="online-user">
