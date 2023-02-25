@@ -24,11 +24,11 @@ function App() {
       event.preventDefault();
       const oldUser = user
       setUser((prev) => { return {...prev, currentRoom: ""}})
-      setRoom({name: "",
+      setRoom((prev) => { return { ...prev, name: "",
       id: "",
       userWhoOpened: "",
       onlineUsers: [],
-      drawingHistory: []})
+      drawingHistory: []}})
       await logoutUser(oldUser)
       return "beforeunload"
     }

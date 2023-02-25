@@ -18,8 +18,8 @@ const RoomsList: FC<LoadingState> = ({loading}) => {
     if(res && typeof(res) !== "string" && typeof(res) !== "undefined") {
       setUser((prev) => { return {...prev, currentRoom: roomId} })
       if(errMsg) setErrMsg(() => "")
-      const newRoomInfo = { name: res.name, id: res.id, userWhoOpened: res.userWhoOpened, onlineUsers: res.onlineUsers, drawingHistory: res.drawingHistory}
-      setRoom(() => newRoomInfo)
+      // const newRoomInfo = { name: res.name, id: res.id, userWhoOpened: res.userWhoOpened, onlineUsers: res.onlineUsers, drawingHistory: res.drawingHistory}
+      setRoom((prev) => { return { ...prev, name: res.name, id: res.id, userWhoOpened: res.userWhoOpened, onlineUsers: res.onlineUsers, drawingHistory: res.drawingHistory}})
       navigate(`/room/${roomId}`)
     }
     else {

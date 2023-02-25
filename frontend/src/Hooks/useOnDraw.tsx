@@ -10,7 +10,7 @@ export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | unde
     }, socket: Socket<DefaultEventsMap, DefaultEventsMap>, drawingStats: drawingProps, isEraser: boolean) {
 
     const { user } = useUserContext()
-    const { room } = useRoomContext()
+    const { room, setRoom } = useRoomContext()
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const isDrawingRef = useRef<boolean>(false)
@@ -41,6 +41,12 @@ export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | unde
             if(!canvasRef.current) return
             const listener = () => {
                 isDrawingRef.current = false
+                let arr: String[] = []
+                arr.concat(room.drawingUsers)
+                arr.filter((name) => name !== user.name)
+                setRoom((prev) => { return { ...prev, drawingUsers: arr}})
+                socket.emit("endDrawing", user.name)
+                
                 // To prevent lines connecting after we finished drawing
                 prevPointRef.current = null
                 
@@ -79,7 +85,7 @@ export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | unde
         return () => {
            removeListeners()
         }
-    },[drawingStats.color, drawingStats.width, isEraser, onDraw, room.drawingHistory, socket, user.currentRoom, user.name])
+    },[drawingStats.color, drawingStats.width, isEraser, onDraw, room, room.drawingHistory, setRoom, socket, user.currentRoom, user.name])
 
     function setCanvasRef(ref: HTMLCanvasElement | null) {
         if(!ref) return
@@ -93,6 +99,12 @@ export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | unde
 
     function onMouseDown() {
         isDrawingRef.current = true
+        let arr: String[] = []
+        arr.concat(room.drawingUsers)
+        arr.push(user.name)
+        setRoom((prev) => { return { ...prev, drawingUsers: arr}})
+        socket.emit("startDrawing", user.name)
+
     }
 
     return { setCanvasRef, onMouseDown, getCanvasRef, isDrawingRef }

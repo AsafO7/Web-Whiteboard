@@ -4,7 +4,6 @@ import { useRoomContext } from '../../../contexts/RoomProvider'
 import { Point } from '../../../contexts/RoomsProvider'
 import { SocketDrawingProps } from '../Room'
 
-
 const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, isEraser}) => {
 
   const {room, setRoom} = useRoomContext()
@@ -121,7 +120,9 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, isEraser}) =>
 // Receiving the drawing history
   useEffect(() => {
     redraw()
-},[redraw])
+},[])
+
+console.log(1)
 
 
   return (

@@ -3,10 +3,10 @@ import { useRoomContext } from "../../../contexts/RoomProvider"
 import { useUserContext } from "../../../contexts/UserProvider"
 import { SocketRef } from "../../Lobby/Lobby"
 
+
 const OnlineUsers: FC<SocketRef> = ({socket}) => {
   const { room, setRoom } = useRoomContext()
   const { user } = useUserContext()
-
 
   const connectUser = useCallback(() => {
       socket.emit("user-login", user)
@@ -61,6 +61,24 @@ const OnlineUsers: FC<SocketRef> = ({socket}) => {
       socket.removeListener("new-admin")
     }
   },[setRoom, socket])
+
+  useEffect(() => {
+    socket.on("updateDrawingUsers", (user, addUser) => {
+      let arr: String[] = []
+      arr.concat(room.drawingUsers)
+      if(addUser) {
+        arr.push(user)
+      }
+      else {
+        arr.filter((name) => name !== user.name)
+      }
+      setRoom((prev) => { return { ...prev, drawingUsers: arr}})
+    })
+
+    return () => {
+      socket.removeListener("updateDrawingUsers")
+    }
+  },[room, setRoom, socket])
   
   
   return (
@@ -69,8 +87,12 @@ const OnlineUsers: FC<SocketRef> = ({socket}) => {
       {room.onlineUsers.map((user, index) => {
         return user === room.userWhoOpened ? <div key={`${user}${index}`} className="online-user">
           {user}<span style={{fontSize: "0.8rem", fontWeight: "bold", color: "red", letterSpacing: "1px"}}> - Admin</span>
+          <span style={{fontSize: "1rem", fontWeight: "bold", color: "black", letterSpacing: "1px"}}>
+            {room.drawingUsers && room.drawingUsers.indexOf(user) !== -1 ? "\t drawing..." : ""}</span>
         </div>
-        : <div key={`${user}${index}`} className="online-user">{user}</div>
+        : <div key={`${user}${index}`} className="online-user">{user}
+        <span style={{fontSize: "1rem", fontWeight: "bold", color: "black", letterSpacing: "1px"}}>
+          {room.drawingUsers && room.drawingUsers.indexOf(user) !== -1 ? "\t drawing..." : ""}</span></div>
       })}
     </div>
   )

@@ -20,6 +20,7 @@ export function RoomProvider({ children }: {children: React.ReactNode}) {
     userWhoOpened: "",
     onlineUsers: [],
     drawingHistory: [],
+    drawingUsers: [],
   })
 
   return (

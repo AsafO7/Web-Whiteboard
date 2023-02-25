@@ -18,6 +18,7 @@ export interface Room {
     userWhoOpened: String,
     onlineUsers: String[],
     drawingHistory: Drawing[],
+    drawingUsers: String[],
 }
 
 interface Rooms {

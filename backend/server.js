@@ -147,6 +147,14 @@ io.sockets.on("connection", socket => {
         socket.to(roomId).emit("update-drawings", drawings)
     })
 
+    socket.on("startDrawing", (user) => {
+        socket.to(roomId).emit("updateDrawingUsers", user, true)
+    })
+
+    socket.on("endDrawing", (user) => {
+        socket.to(roomId).emit("updateDrawingUsers", user, false)
+    })
+
     /***************** PaintUI *****************/
     socket.on("send-undo", async(currRoom, drawings) => {
         const room = await Room.findOne({ id: currRoom })
