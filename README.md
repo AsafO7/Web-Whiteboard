@@ -4,6 +4,7 @@ A MERN project in which you can create a user, open a new drawing room or join a
 ********************** WORK IN PROGRESS **********************
 
 ## Usage
+Rename the .envexample to .env and add your MONGO_URI
 
 ### Install dependencies
  **Backend deps** <br>
