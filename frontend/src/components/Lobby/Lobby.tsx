@@ -27,7 +27,6 @@ const Lobby: FC<SocketRef> = ({socket}) => {
   const updateToEmptyRoom = useCallback(async () => {
     socket.disconnect()
     if(user.currentRoom === "") return
-    // const userInfo = { name: user.name, email: user.email, currentRoom: "" }
     const res = await updateUserRoom(user)
     if(typeof(res) === "string") console.log(res)
     else {

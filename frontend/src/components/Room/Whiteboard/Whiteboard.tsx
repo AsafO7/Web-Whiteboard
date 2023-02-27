@@ -120,9 +120,7 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, isEraser}) =>
 // Receiving the drawing history
   useEffect(() => {
     redraw()
-},[])
-
-console.log(1)
+},[redraw])
 
 
   return (

@@ -17,7 +17,6 @@ const PaintUI: FC<SocketDrawingProps> = ({drawingStats, setDrawingStats, socket,
     let drawingInd = -1
     for(let i = tempDrawings.length - 1; i > -1; i--) {
       if(tempDrawings[i].userWhoDrew === user.name) {
-        console.log(tempDrawings)
         drawingInd = i
         break
       }
@@ -28,7 +27,6 @@ const PaintUI: FC<SocketDrawingProps> = ({drawingStats, setDrawingStats, socket,
           drawings.push(tempDrawings[j])
         }
       }
-      console.log(drawings)
       socket.emit("send-undo", room.id, drawings)
       setRoom(prev => { return {...prev, drawingHistory: drawings} })
     }
