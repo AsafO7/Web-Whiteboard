@@ -12,6 +12,7 @@
     flex-grow: 1;
     flex-direction: column;
     overflow-y: scroll;
+    white-space: pre-wrap;
 }
 
 .messages {

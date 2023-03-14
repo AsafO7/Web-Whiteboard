@@ -96,3 +96,8 @@
   color: rgb(255, 217, 0);
   /* background-color: rgb(205, 205, 205); */
 }
+
+.activeWidthBtn {
+    background-color: #c8c8c8;
+    border: none;
+}

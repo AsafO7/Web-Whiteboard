@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { FC, useRef } from "react"
 import { useRoomContext } from "../../../contexts/RoomProvider"
 import { Drawing } from "../../../contexts/RoomsProvider"
 import { useUserContext } from "../../../contexts/UserProvider"
@@ -9,6 +9,9 @@ const PaintUI: FC<SocketDrawingProps> = ({drawingStats, setDrawingStats, socket,
 
   const { user } = useUserContext()
   const { room, setRoom } = useRoomContext()
+
+  const colorInputRef = useRef<HTMLInputElement>(null)
+  drawingStats.colorRef = colorInputRef
 
   function handleUndo() {
     if(room.drawingHistory.length === 0) return
@@ -43,12 +46,12 @@ const PaintUI: FC<SocketDrawingProps> = ({drawingStats, setDrawingStats, socket,
     <div className='paint-ui'>
       <div className="paint-ui-grid">
         <label htmlFor="color">Color:</label>
-        <input type="color" id="color" onChange={e => setDrawingStats({...drawingStats, color: e.target.value})}></input>
+        <input type="color" id="color" ref={colorInputRef}></input>
         <WidthButtons drawingStats={drawingStats} setDrawingStats={setDrawingStats}/>
         <button onClick={() => setIsEraser(false)} className={!isEraser ? "pen-btn active" : "pen-btn"}>Draw</button>
         <button onClick={() => setIsEraser(true)} className={isEraser ? "eraser-btn active" : "eraser-btn"}>Erase</button>
         <button className="paintui-btn undo-btn" onClick={handleUndo}>Undo</button>
-        <button className="paintui-btn clear-btn" onClick={handleClear}>Clear</button>
+        {room.userWhoOpened === user.name && <button className="paintui-btn clear-btn" onClick={handleClear}>Clear</button>}
       </div>
     </div>
   )

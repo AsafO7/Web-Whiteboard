@@ -8,7 +8,7 @@ import Whiteboard from './Whiteboard/Whiteboard';
 
 export interface drawingProps {
   // shape: string
-  color: string,
+  colorRef: React.RefObject<HTMLInputElement> | null,
   width: number
 }
 
@@ -25,7 +25,7 @@ export interface PaintUIProps {
 export type SocketDrawingProps = SocketRef & PaintUIProps & isEraser
 
 const Room: FC<SocketRef> = ({socket}) => {
-  const [drawingStats, setDrawingStats] = useState<drawingProps>({color: "#000000", width: 5})
+  const [drawingStats, setDrawingStats] = useState<drawingProps>({colorRef: null, width: 5})
   const [isEraser, setIsEraser] = useState<boolean>(false)
 
   useEffect(() => {

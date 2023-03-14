@@ -53,14 +53,14 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, isEraser}) =>
 
   
   function onDraw(ctx: CanvasRenderingContext2D | null | undefined, point: Point | null, prevPoint: Point | null, isEraser: boolean) {
-      drawLine(prevPoint, point, ctx, drawingStats.color, drawingStats.width, isEraser)
+      drawLine(prevPoint, point, ctx, drawingStats.colorRef?.current?.value, drawingStats.width, isEraser)
   }
 
   const drawLine = useCallback((
     start: Point | null,
     end: Point | null,
     ctx: CanvasRenderingContext2D | null | undefined,
-    color: string,
+    color: string | undefined,
     width: number,
     isEraser: boolean) => 
     {
@@ -69,20 +69,20 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, isEraser}) =>
         ctx.globalCompositeOperation = isEraser ? "destination-out" : "source-over"
         ctx.beginPath()
         ctx.lineWidth = width
-        ctx.strokeStyle = color
+        if(color) { ctx.strokeStyle = color }
         ctx.moveTo(start.x, start.y)
         ctx.lineTo(end.x, end.y)
         ctx.stroke()
 
         // to avoid line breaks
-        ctx.fillStyle = color // Choose a filling color
+        if(color) { ctx.fillStyle = color } // Choose a filling color
         ctx.beginPath() // Begin path to draw
         ctx.arc(start.x, start.y, 2, 0, 2 * Math.PI) // Draw a circle from point
         ctx.fill() // Fill the circle
         
-        if(isDrawingRef.current === true) socket.emit("send-drawing", start, end, drawingStats.color, drawingStats.width, isEraser)
+        if(isDrawingRef.current === true) socket.emit("send-drawing", start, end, drawingStats.colorRef?.current?.value, drawingStats.width, isEraser)
       }
-  },[drawingStats.color, drawingStats.width, isDrawingRef, socket])
+  },[drawingStats.colorRef, drawingStats.width, isDrawingRef, socket])
 
   // Real time drawing
   useEffect(() => {
@@ -92,7 +92,7 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, isEraser}) =>
     return(() => {
       socket.removeListener("receive-drawing")
     })
-},[drawLine, drawingStats.color, getCanvasRef, socket])
+},[drawLine, getCanvasRef, socket])
 
  const redraw = useCallback(() => {  
   // if(room.drawingHistory.length === 0) return

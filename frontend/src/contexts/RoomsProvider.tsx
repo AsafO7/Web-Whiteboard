@@ -7,7 +7,7 @@ export type Point = {
 
 export type Drawing = {
   path: Point[],
-  color: string, 
+  color: string | undefined, 
   width: number, 
   isEraser: boolean, 
   userWhoDrew: String}
