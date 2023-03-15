@@ -69,6 +69,7 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, isEraser}) =>
         ctx.globalCompositeOperation = isEraser ? "destination-out" : "source-over"
         ctx.beginPath()
         ctx.lineWidth = width
+        ctx.lineCap = 'round'
         if(color) { ctx.strokeStyle = color }
         ctx.moveTo(start.x, start.y)
         ctx.lineTo(end.x, end.y)

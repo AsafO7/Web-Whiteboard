@@ -51,7 +51,6 @@ export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | unde
                 prevPointRef.current = null
                 
                 if(path.current.length !== 0) {
-                    console.log(drawingStats.colorRef?.current?.value)
                     room.drawingHistory.push({path: path.current, color: drawingStats.colorRef?.current?.value, width: drawingStats.width, isEraser, userWhoDrew: user.name})
                     socket.emit("save-drawing", path.current, drawingStats.colorRef?.current?.value, drawingStats.width, user.currentRoom, isEraser, user.name)
                     path.current = []
@@ -100,10 +99,10 @@ export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | unde
 
     function onMouseDown() {
         isDrawingRef.current = true
-        let arr: String[] = []
-        arr.concat(room.drawingUsers)
-        arr.push(user.name)
-        setRoom((prev) => { return { ...prev, drawingUsers: arr}})
+        // let arr: String[] = []
+        // arr.concat(room.drawingUsers)
+        // arr.push(user.name)
+        // setRoom((prev) => { return { ...prev, drawingUsers: arr}})
         socket.emit("startDrawing", user.name)
 
     }

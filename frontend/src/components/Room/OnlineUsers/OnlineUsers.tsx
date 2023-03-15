@@ -18,7 +18,7 @@ const OnlineUsers: FC<SocketRef> = ({socket}) => {
 
 
   const addToOnlineList = useCallback((newUser: string, newUserRoomId: string) => {
-      console.log("addToOnlineList")
+      // console.log("addToOnlineList")
       if(room.onlineUsers.indexOf(newUser) !== -1 || room.id !== newUserRoomId) return
       let newUsersList = room.onlineUsers
       newUsersList.push(newUser)
@@ -36,7 +36,7 @@ const OnlineUsers: FC<SocketRef> = ({socket}) => {
 
 
   const removeFromOnlineList = useCallback((username: string) => {
-    console.log("Remove from online list")
+    // console.log("Remove from online list")
     let newUsersList = room.onlineUsers
     if(newUsersList.indexOf(username) === -1) return
     newUsersList = newUsersList.filter((name) => name !== username)
