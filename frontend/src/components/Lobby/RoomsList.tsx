@@ -1,6 +1,7 @@
 import { FC, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getRoomInfo } from '../../app/apiCalls'
+import { useDrawingsContext } from '../../contexts/DrawingsProvider'
 import { useRoomContext } from '../../contexts/RoomProvider'
 import { useRoomsContext } from '../../contexts/RoomsProvider'
 import { useUserContext } from '../../contexts/UserProvider'
@@ -10,6 +11,7 @@ const RoomsList: FC<LoadingState> = ({loading}) => {
   const { user, setUser } = useUserContext()
   const { roomsList } = useRoomsContext()
   const { setRoom } = useRoomContext()
+  const { setDrawingHistory } = useDrawingsContext()
   const [errMsg, setErrMsg] = useState("")
   const navigate = useNavigate()
 
@@ -18,7 +20,8 @@ const RoomsList: FC<LoadingState> = ({loading}) => {
     if(res && typeof(res) !== "string" && typeof(res) !== "undefined") {
       setUser((prev) => { return {...prev, currentRoom: roomId} })
       if(errMsg) setErrMsg(() => "")
-      setRoom((prev) => { return { ...prev, name: res.name, id: res.id, userWhoOpened: res.userWhoOpened, onlineUsers: res.onlineUsers, drawingHistory: res.drawingHistory}})
+      setRoom((prev) => { return { ...prev, name: res.name, id: res.id, userWhoOpened: res.userWhoOpened, onlineUsers: res.onlineUsers}})
+      setDrawingHistory(res.drawingHistory)
       navigate(`/room/${roomId}`)
     }
     else {

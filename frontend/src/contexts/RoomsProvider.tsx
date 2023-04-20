@@ -1,23 +1,10 @@
 import React, { useContext, useState } from 'react'
 
-export type Point = {
-  x: number,
-  y: number,
-}
-
-export type Drawing = {
-  path: Point[],
-  color: string | undefined, 
-  width: number, 
-  isEraser: boolean, 
-  userWhoDrew: String}
-
 export interface Room {
     name: String,
     id: String,
     userWhoOpened: String,
     onlineUsers: String[],
-    drawingHistory: Drawing[],
     drawingUsers: String[],
 }
 

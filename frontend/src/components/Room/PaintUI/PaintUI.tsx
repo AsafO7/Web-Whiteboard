@@ -1,6 +1,6 @@
 import { FC, useRef } from "react"
 import { useRoomContext } from "../../../contexts/RoomProvider"
-import { Drawing } from "../../../contexts/RoomsProvider"
+import { Drawing, useDrawingsContext } from "../../../contexts/DrawingsProvider"
 import { useUserContext } from "../../../contexts/UserProvider"
 import { SocketDrawingProps } from "../Room"
 import WidthButtons from "./WidthButtons"
@@ -8,14 +8,15 @@ import WidthButtons from "./WidthButtons"
 const PaintUI: FC<SocketDrawingProps> = ({drawingStats, setDrawingStats, socket, setIsEraser, isEraser}) => {
 
   const { user } = useUserContext()
-  const { room, setRoom } = useRoomContext()
+  const { room } = useRoomContext()
+  const { drawingHistory, setDrawingHistory } = useDrawingsContext()
 
   const colorInputRef = useRef<HTMLInputElement>(null)
   drawingStats.colorRef = colorInputRef
 
   function handleUndo() {
-    if(room.drawingHistory.length === 0) return
-    const tempDrawings = room.drawingHistory
+    if(drawingHistory.length === 0) return
+    const tempDrawings = drawingHistory
     let drawings: Drawing[] = []
     let drawingInd = -1
     for(let i = tempDrawings.length - 1; i > -1; i--) {
@@ -31,15 +32,15 @@ const PaintUI: FC<SocketDrawingProps> = ({drawingStats, setDrawingStats, socket,
         }
       }
       socket.emit("send-undo", room.id, drawings)
-      setRoom(prev => { return {...prev, drawingHistory: drawings} })
+      setDrawingHistory(drawings)
     }
   }
 
   function handleClear() {
     if(user.name !== room.userWhoOpened) return
-    if(room.drawingHistory.length === 0) return
+    if(drawingHistory.length === 0) return
     socket.emit("send-clear", room.id)
-    setRoom(prev => { return {...prev, drawingHistory: []} })
+    setDrawingHistory([])
   }
 
   return (

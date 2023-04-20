@@ -2,15 +2,17 @@ import { useEffect, useRef } from "react";
 import { Socket } from "socket.io-client";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import { useRoomContext } from "../contexts/RoomProvider";
-import { Point } from "../contexts/RoomsProvider";
+import { Point } from "../contexts/DrawingsProvider";
 import { useUserContext } from "../contexts/UserProvider";
 import { drawingProps } from "../components/Room/Room";
+import { useDrawingsContext } from "../contexts/DrawingsProvider";
 
 export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | undefined, point: Point | null, prevPoint: Point | null, isEraser: boolean): void,
     }, socket: Socket<DefaultEventsMap, DefaultEventsMap>, drawingStats: drawingProps, isEraser: boolean) {
 
     const { user } = useUserContext()
     const { room, setRoom } = useRoomContext()
+    const { drawingHistory, setDrawingHistory } = useDrawingsContext()
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const isDrawingRef = useRef<boolean>(false)
@@ -51,7 +53,9 @@ export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | unde
                 prevPointRef.current = null
                 
                 if(path.current.length !== 0) {
-                    room.drawingHistory.push({path: path.current, color: drawingStats.colorRef?.current?.value, width: drawingStats.width, isEraser, userWhoDrew: user.name})
+                    let drawings = drawingHistory
+                    drawings.push({path: path.current, color: drawingStats.colorRef?.current?.value, width: drawingStats.width, isEraser, userWhoDrew: user.name})
+                    setDrawingHistory(drawings)
                     socket.emit("save-drawing", path.current, drawingStats.colorRef?.current?.value, drawingStats.width, user.currentRoom, isEraser, user.name)
                     path.current = []
                 }
@@ -85,7 +89,7 @@ export function useOnDraw(onDraw: { (ctx: CanvasRenderingContext2D | null | unde
         return () => {
            removeListeners()
         }
-    },[drawingStats.colorRef, drawingStats.colorRef?.current?.value, drawingStats.width, isEraser, onDraw, room, room.drawingHistory, setRoom, socket, user.currentRoom, user.name])
+    },[drawingHistory, drawingStats.colorRef, drawingStats.colorRef?.current?.value, drawingStats.width, isEraser, onDraw, room, setDrawingHistory, setRoom, socket, user.currentRoom, user.name])
 
     function setCanvasRef(ref: HTMLCanvasElement | null) {
         if(!ref) return

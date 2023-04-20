@@ -1,12 +1,14 @@
 import { FC, useRef, useCallback, useEffect} from 'react'
 import { useOnDraw } from '../../../Hooks/useOnDraw'
-import { useRoomContext } from '../../../contexts/RoomProvider'
-import { Point } from '../../../contexts/RoomsProvider'
+// import { useRoomContext } from '../../../contexts/RoomProvider'
+import { Point } from '../../../contexts/DrawingsProvider'
 import { SocketDrawingProps } from '../Room'
+import { useDrawingsContext } from '../../../contexts/DrawingsProvider'
 
 const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, isEraser}) => {
 
-  const {room, setRoom} = useRoomContext()
+  // const {room, setRoom} = useRoomContext()
+  const { drawingHistory, setDrawingHistory } = useDrawingsContext()
 
   // Sets the ref to the canvas here using the function setCanvasRef in useOnDraw.tsx
   const {setCanvasRef, onMouseDown, getCanvasRef, isDrawingRef} = useOnDraw(onDraw, socket, drawingStats, isEraser)
@@ -99,29 +101,30 @@ const Whiteboard: FC<SocketDrawingProps> = ({socket, drawingStats, isEraser}) =>
   // if(room.drawingHistory.length === 0) return
   // Clear the canvas to prevent lags
   getCanvasRef()?.getContext("2d")?.clearRect(0,0,window.innerWidth, window.innerHeight)
-  for(let i = 0; i < room.drawingHistory.length; i++) {
-    for(let j = 0; j < room.drawingHistory[i].path.length - 1; j++) {
-      drawLine(room.drawingHistory[i].path[j], room.drawingHistory[i].path[j+1], getCanvasRef()?.getContext("2d"), room.drawingHistory[i].color, room.drawingHistory[i].width,
-      room.drawingHistory[i].isEraser)
+  for(let i = 0; i < drawingHistory.length; i++) {
+    for(let j = 0; j < drawingHistory[i].path.length - 1; j++) {
+      drawLine(drawingHistory[i].path[j], drawingHistory[i].path[j+1], getCanvasRef()?.getContext("2d"), drawingHistory[i].color, drawingHistory[i].width,
+      drawingHistory[i].isEraser)
     } 
   }
- },[getCanvasRef, room.drawingHistory, drawLine])
+ },[getCanvasRef, drawingHistory, drawLine])
 
  // Updates the room's drawings through the backend
  useEffect(() => {
   socket.on("update-drawings", (drawings: {path: Point[], color: string, width: number, isEraser: boolean, userWhoDrew: String}[]) => {
-    setRoom(prev => { return {...prev, drawingHistory: drawings} })
+    setDrawingHistory(drawings)
   })
 
   return () => {
     socket.removeListener("update-drawings")
   }
- },[setRoom, socket])
+ },[setDrawingHistory, socket])
 
 // Receiving the drawing history
   useEffect(() => {
     redraw()
-},[redraw])
+    setDrawingHistory(drawingHistory)
+},[drawingHistory, setDrawingHistory])
 
 
   return (
